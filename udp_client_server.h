@@ -10,9 +10,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <thread>
 
-class udp_client_server_runtime_error : public std::runtime_error
-{
+	class udp_client_server_runtime_error : public std::runtime_error
+	{
 	public:
 	    udp_client_server_runtime_error(const char *w) : std::runtime_error(w) {}
 	};
@@ -21,10 +22,13 @@ class udp_client_server_runtime_error : public std::runtime_error
 	class udp_client
 	{
 	public:
-		                udp_client(const std::string& addr);
-		                ~udp_client();
+		void operator()(){
+			return;
+			};
 
-	    int                 send(const char *msg, size_t size);
+		udp_client(const std::string& addr);
+		~udp_client();
+	  	void  send(const char *msg, size_t size);
 
 	private:
 	    int                 f_socket;

@@ -73,6 +73,7 @@ udp_server::udp_server(const std::string& addr)
 		{
 		        recv(f_socket, msg, max_size, 0);
 		        std::cout<<msg<<"\n";
+			
 		        timed_recv(msg,max_size,max_wait_sec);
 		}
 	  
