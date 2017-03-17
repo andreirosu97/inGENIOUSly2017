@@ -4,11 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
-namespace udp_client_server
+udp_server::udp_server(const std::string& addr)
 {
-
-	udp_server::udp_server(const std::string& addr)
-	{
 	    char decimal_port[16];
 	    f_addr=htonl(INADDR_ANY);
 	    snprintf(decimal_port, sizeof(decimal_port), "%d", 8889);
@@ -79,14 +76,13 @@ namespace udp_client_server
 		        timed_recv(msg,max_size,max_wait_sec);
 		}
 	  
-	}
-
 }
+
 int main()
 {
     std::cout<<"Hello, this is the server!\n";  
     char recvBuff[1024]={0};
-    udp_client_server::udp_server server("127.0.0.1");
+    udp_server server("127.0.0.1");
     server.timed_recv(recvBuff,sizeof(recvBuff)+1,5);
     return 0;
 }

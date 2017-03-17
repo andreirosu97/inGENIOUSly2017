@@ -6,10 +6,7 @@
 
 
 
-namespace udp_client_server
-{
-
-	udp_client::udp_client(const std::string& addr): f_addr(addr)
+udp_client::udp_client(const std::string& addr): f_addr(addr)
 	{
 	    char decimal_port[16];
 	    snprintf(decimal_port, sizeof(decimal_port), "%d", 8889);
@@ -44,14 +41,12 @@ namespace udp_client_server
 	    return sendto(f_socket, msg, size, 0, f_addrinfo->ai_addr, f_addrinfo->ai_addrlen);
 	}
 
-}
-
 int main()
 {
     std::cout<<"Hello, this is the client!\n";  
     char sendBuff[1024]={0};
     std::cin.get(sendBuff,1024);
-    udp_client_server::udp_client client("127.0.0.1");
+    udp_client client("127.0.0.1");
     client.send(sendBuff,sizeof(sendBuff)+1);
 
     return 0;

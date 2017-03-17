@@ -11,11 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-namespace udp_client_server
+class udp_client_server_runtime_error : public std::runtime_error
 {
-
-	class udp_client_server_runtime_error : public std::runtime_error
-	{
 	public:
 	    udp_client_server_runtime_error(const char *w) : std::runtime_error(w) {}
 	};
@@ -49,6 +46,5 @@ namespace udp_client_server
 	    int                 f_socket;
 	    std::string         f_addr;
 	    struct addrinfo *   f_addrinfo;
-	};
+};
 
-} 
