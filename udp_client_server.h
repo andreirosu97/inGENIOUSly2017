@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 	class udp_client_server_runtime_error : public std::runtime_error
 	{
@@ -19,35 +21,29 @@
 	};
 
 
-	class udp_client
-	{
+class udp_client
+{
 	public:
-		void operator()(){
-			return;
-			};
-
-		udp_client(const std::string& addr);
+		udp_client(const char *addr);
 		~udp_client();
-	  	void  send(const char *msg, size_t size);
-			void test(int n);
+		void operator()(){return;};
+	  void  send(const char *msg, size_t size);
+
 	private:
 	    int                 f_socket;
-	    std::string         f_addr;
-	    struct addrinfo *   f_addrinfo;
-	};
+	    struct sockaddr_in  me;
+};
 
 
-	class udp_server
-	{
+class udp_server
+{
 	public:
-		                udp_server(const std::string& addr);
-		                ~udp_server();
-
-	    int                 recv_msg(char *msg, size_t max_size);
-	    void                timed_recv(char *msg, size_t max_size, int max_wait_sec);
+		udp_server();
+		~udp_server();
+		int  recv_msg(char *msg, size_t max_size);
+		void timed_recv(char *msg, size_t max_size, int max_wait_sec);
 
 	private:
-	    int                 f_socket;
-	    std::string         f_addr;
-	    struct addrinfo *   f_addrinfo;
+		int f_socket;
+		struct sockaddr_in  me;
 };
