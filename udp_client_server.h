@@ -29,7 +29,7 @@
 		udp_client(const std::string& addr);
 		~udp_client();
 	  	void  send(const char *msg, size_t size);
-
+			void test(int n);
 	private:
 	    int                 f_socket;
 	    std::string         f_addr;
@@ -51,4 +51,3 @@
 	    std::string         f_addr;
 	    struct addrinfo *   f_addrinfo;
 };
-
