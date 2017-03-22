@@ -5,9 +5,10 @@
 #include <unistd.h>
 #include <iostream>
 
-udp_client::udp_client(const char *addr)//constructor
+udp_client::udp_client(const char *hostname)//constructor
 {
 	memset( (char*) &me ,0 ,sizeof(me));
+	struct hostent *hostinfo;
 
 	f_socket = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
 	if(f_socket == -1)
@@ -15,7 +16,13 @@ udp_client::udp_client(const char *addr)//constructor
 
 	me.sin_family = AF_INET;
 	me.sin_port = htons(8889);
-	me.sin_addr.s_addr=inet_addr(addr);
+	hostinfo= gethostbyname(hostname);
+	if(!hostinfo)
+	{
+		fprintf(stderr,"Unknown host %s.\n",hostname);
+		exit(EXIT_FAILURE);
+	}
+	me.sin_addr=*(struct in_addr *)hostinfo->h_addr;
 
 }
 
@@ -38,10 +45,15 @@ void udp_client::send(const char *msg, size_t size)//sending info at speed = 1 p
 int main(int argc, char *argv[])
 {
 	std::cout<<"Hello, this is the client!\n";
+	if(argc<2)
+	{
+		fprintf(stderr,"No hostname recieved!\n");
+		exit(EXIT_FAILURE);
+	}
 	udp_client client(argv[1]);
 	char sendBuff[1024]={0};
 	std::cin.get(sendBuff,1024);
-  std::thread client_th(&udp_client::send,&client,sendBuff,strlen(sendBuff));
-  client_th.join();
-  return 0;
+  	std::thread client_th(&udp_client::send,&client,sendBuff,strlen(sendBuff));
+  	client_th.join();
+ 	 return 0;
 }

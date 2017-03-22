@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <thread>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <netinet/in.h>
 
 	class udp_client_server_runtime_error : public std::runtime_error
