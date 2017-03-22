@@ -6,7 +6,7 @@
 
 udp_server::udp_server()
 {
-			struct sockaddr_in me;
+	    struct sockaddr_in me;
 	    memset( (char*) &me ,0 ,sizeof(me));
 
 	    f_socket = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
