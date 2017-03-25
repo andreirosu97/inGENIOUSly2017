@@ -7,6 +7,8 @@ class CarConnection {
   std::pair<const std::string, const int> serverAddress;
   int fd_socket;
   CarState* state;
+  CarServer* server; // OWNER
+  CarClient* client; // OWNER
 
 public:
   CarConnection(CarState* state, std::pair<const std::string, const int> serverAddress);

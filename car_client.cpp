@@ -15,6 +15,10 @@ CarClient::CarClient(CarState* state, int fd_socket):
   state(state),
   fd_socket(fd_socket){}
 
+CarClient::~CarClient() {
+  delete ClientThead;
+}
+
 void CarClient::Start(){
   ClientThread = new std::thread(&CarClient::SyncronizeState, this);
   ClientThread->detach();

@@ -39,8 +39,8 @@ void CarConnection::Connect(){
 }
 
 void CarConnection::Start(){
-  CarClient* client = new CarClient(state, fd_socket);
-  CarServer* server = new CarServer(state, fd_socket);
+  client = new CarClient(state, fd_socket);
+  server = new CarServer(state, fd_socket);
 
   client->Start();
   server->Start();
@@ -51,4 +51,6 @@ void CarConnection::Start(){
 CarConnection::~CarConnection(){
     std::cout<<"CLOSING SOCKET!\n";
     close(fd_socket);
+    delete CarClient;
+    delete CarServer;
 }

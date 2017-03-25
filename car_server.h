@@ -7,8 +7,7 @@
 
 class CarServer {
 
-  private:
-    std::pair<const std::string, const int> serverAddress;
+private:
     int fd_socket;
     CarState* state;
     std::thread* ServerThread;

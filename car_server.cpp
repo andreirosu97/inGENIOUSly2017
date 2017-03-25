@@ -17,8 +17,7 @@ CarServer::CarServer(CarState* state, int socket):
   serverAddress(serverAddress){}
 
 CarServer::~CarServer(){
-  std::cout<<"CLOSING CAR SERVER!\n";
-  close(fd_socket);
+  delete ServerThread;
 }
 
 void CarServer::Start(){
@@ -28,7 +27,7 @@ void CarServer::Start(){
 
 void CarServer::SyncronizeState(){
 
-  char msg[40];
+  char msg[60];
   int msglen=39;
 
   while(true){
@@ -36,6 +35,7 @@ void CarServer::SyncronizeState(){
       state->new_message = false;
       std::cout<<state->message<<"\n";
       snprintf(msg,60,"Am primit mesajul %s",state->message.data());
+      msglen = 60;
       send(fd_socket,msg,msglen,0);
     }
   }
