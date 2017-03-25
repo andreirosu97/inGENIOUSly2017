@@ -16,7 +16,7 @@ CarClient::CarClient(CarState* state, int fd_socket):
   fd_socket(fd_socket){}
 
 CarClient::~CarClient() {
-  delete ClientThead;
+  delete ClientThread;
 }
 
 void CarClient::Start(){

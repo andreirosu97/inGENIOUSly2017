@@ -13,8 +13,8 @@
 
 
 CarServer::CarServer(CarState* state, int fd_socket):
-  state(state),fd_socket(fd_socket),
-  serverAddress(serverAddress){}
+  state(state),
+  fd_socket(fd_socket) {}
 
 CarServer::~CarServer(){
   delete ServerThread;

@@ -1,6 +1,4 @@
 #include "car_connection.h"
-#include "car_client.h"
-#include "car_server.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

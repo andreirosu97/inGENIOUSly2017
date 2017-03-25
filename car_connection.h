@@ -2,6 +2,8 @@
 #define _CAR_CONNECTION_H_
 
 #include "car_state.h"
+#include "car_client.h"
+#include "car_server.h"
 
 class CarConnection {
   std::pair<const std::string, const int> serverAddress;
