@@ -1,3 +1,4 @@
+
 #include "car_client.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -43,9 +44,9 @@ CarCliet::SyncronizeState(){
   FD_ZERO(&s);
   FD_SET(f_socket, &s);
   struct timeval timeout;
-  timeout.tv_sec = max_wait_sec;
+  timeout.tv_sec = ;
   timeout.tv_usec = 0;
-  int retval = select(f_socket+1, &s, NULL ,NULL , NULL);
+  int retval = select(f_socket+1, &s, NULL ,NULL , &timeout);
 
   if(retval == -1) {
     std::cout<<"Select error!";
