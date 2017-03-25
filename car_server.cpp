@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <thread>
 #include <iostream>
 #include <ctime>
 #include <cstring>
@@ -25,19 +26,23 @@ void CarServer::Start(){
 }
 
 void CarServer::SyncronizeState(){
-  std::cout << "Am pornit sincronizarea starii la server!";
 
   char msg[60];
   int msglen=39;
+
+  struct sockaddr_in s;
+
+  s.sin_family = AF_INET;
+  s.sin_port = htons(5000);
+  s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
   while(true){
     if(state->new_message){
       state->new_message = false;
       std::cout<<state->message<<"\n";
-      std::cout<<"Am primit!";
       snprintf(msg,60,"Am primit mesajul %s",state->message.data());
       msglen = 60;
-      send(fd_socket,msg,msglen,0);
+      sendto(fd_socket,msg,msglen,0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
     }
   }
 }

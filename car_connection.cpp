@@ -28,6 +28,8 @@ void CarConnection::Connect(){
   SocketClient.sin_family = AF_INET;
   SocketClient.sin_port = htons(serverAddress.second);
   SocketClient.sin_addr.s_addr=inet_addr(serverAddress.first.data());
+  int broadcastEnable=1;
+  int ret=setsockopt(fd_socket, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
 
   if(bind(fd_socket, (const sockaddr*) &SocketClient, sizeof(SocketClient))==-1) {
     close(fd_socket);
