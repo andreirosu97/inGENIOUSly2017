@@ -1,4 +1,5 @@
 
+
 #include "car_client.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -39,9 +40,10 @@ void CarClient::SyncronizeState(){
   int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
   while(retval>0){
     recv(fd_socket, msg, max_size, 0);
-    std::cout<<msg<<"\n";
     state->new_message = true;
     state->message = std::string(msg);
+    if(state->message=="STOP")
+      state->shut_down=1;
   }
 
   /*Exit*/

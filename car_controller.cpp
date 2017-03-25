@@ -1,5 +1,5 @@
 #include "car_controller.h"
-
+#include <unistd.h>
 CarController::CarController() {}
 
 void CarController::Start() {
@@ -11,10 +11,15 @@ void CarController::Start() {
 
   connection->Connect();
   connection->Start();
-
+  while(true)
+  {
+    if(state->shut_down){
+      break;
+    }
+    sleep(1);
+  }
 
 }
-
 
 CarController::~CarController() {
   delete state;

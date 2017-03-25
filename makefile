@@ -11,4 +11,4 @@ car_connection.o: car_connection.cpp car_connection.h
 main.o: main.cpp
 	g++ -std=c++11 -I . -c main.cpp
 clean:
-	rm -rf *.o
+	rm -f *.o

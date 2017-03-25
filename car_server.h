@@ -10,7 +10,7 @@ class CarServer {
 private:
     int fd_socket;
     CarState* state;
-    std::thread* ServerThread;
+    std::thread* server_thread;
 
   public:
     CarServer(CarState* state, int fd_socket);

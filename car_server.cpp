@@ -5,7 +5,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <thread>
 #include <iostream>
 #include <ctime>
 #include <cstring>
@@ -17,15 +16,16 @@ CarServer::CarServer(CarState* state, int fd_socket):
   fd_socket(fd_socket) {}
 
 CarServer::~CarServer(){
-  delete ServerThread;
+  delete server_thread;
 }
 
 void CarServer::Start(){
-  ServerThread = new std::thread(&CarServer::SyncronizeState, this);
-  ServerThread->detach();
+  server_thread = new std::thread(&CarServer::SyncronizeState, this);
+  server_thread->detach();
 }
 
 void CarServer::SyncronizeState(){
+  std::cout << "Am pornit sincronizarea starii la server!";
 
   char msg[60];
   int msglen=39;
@@ -34,6 +34,7 @@ void CarServer::SyncronizeState(){
     if(state->new_message){
       state->new_message = false;
       std::cout<<state->message<<"\n";
+      std::cout<<"Am primit!";
       snprintf(msg,60,"Am primit mesajul %s",state->message.data());
       msglen = 60;
       send(fd_socket,msg,msglen,0);
