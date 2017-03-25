@@ -1,4 +1,4 @@
 
 class State {
   int state;
-}
+};
