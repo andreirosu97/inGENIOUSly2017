@@ -5,7 +5,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <thread>
 #include <iostream>
 #include <ctime>
 #include <cstring>
@@ -17,8 +16,8 @@ CarClient::CarClient(CarState* state, int fd_socket):
   fd_socket(fd_socket){}
 
 void CarClient::Start(){
-  std::thread SyncronizeStateThread(&CarClient::SyncronizeState, this);
-  SyncronizeStateThread.join();
+  ClientThread = new std::thread(&CarClient::SyncronizeState, this);
+  ClientThread->detach();
 }
 
 void CarClient::SyncronizeState(){

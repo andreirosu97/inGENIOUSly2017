@@ -49,6 +49,6 @@ void CarConnection::Start(){
 }
 
 CarConnection::~CarConnection(){
-    std::cout<<"CLOSING SERVER!\n";
+    std::cout<<"CLOSING SOCKET!\n";
     close(fd_socket);
 }

@@ -22,8 +22,8 @@ CarServer::~CarServer(){
 }
 
 void CarServer::Start(){
-  std::thread SyncronizeStateSThread(&CarServer::SyncronizeState, this);
-  SyncronizeStateSThread.join();
+  ServerThread = new std::thread(&CarServer::SyncronizeState, this);
+  ServerThread->detach();
 }
 
 void CarServer::SyncronizeState(){

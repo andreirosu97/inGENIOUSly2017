@@ -3,6 +3,7 @@
 
 #include <string>
 #include "car_state.h"
+#include <thread>
 
 class CarServer {
 
@@ -10,6 +11,7 @@ class CarServer {
     std::pair<const std::string, const int> serverAddress;
     int fd_socket;
     CarState* state;
+    std::thread* ServerThread;
 
   public:
     CarServer(CarState* state, int socket);
