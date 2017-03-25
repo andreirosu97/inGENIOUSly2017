@@ -37,8 +37,9 @@ void CarClient::SyncronizeState(){
   timeout.tv_usec = 0;
 
   /*Reading loop*/
-  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
+  int retval=1;
   while(retval>0){
+    retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
     recv(fd_socket, msg, max_size, 0);
     state->new_message = true;
     state->message = std::string(msg);
