@@ -53,14 +53,16 @@ void CarClient::SyncronizeState(){
   timeout.tv_usec = 0;
   int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
 
+  char msg[500];
+  int max_size = 500;
+
   if(retval == -1) {
     std::cout<<"Select error!";
     }else if(retval==0) {
       std::cout<<"Server timed out!\n";
       return;
       } else {
-        recv(f_socket, msg, max_size, 0);
+        recv(fd_socket, msg, max_size, 0);
         std::cout<<msg<<"\n";
-        timed_recv(msg,max_size,max_wait_sec);
   }
 }

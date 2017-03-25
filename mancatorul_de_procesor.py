@@ -19,4 +19,4 @@ nrThread = 100
 
 for i in range(nrThread):
     thread = MancatorulDeProcessor()
-    thread.start()6
+    thread.start()

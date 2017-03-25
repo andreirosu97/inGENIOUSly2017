@@ -3,10 +3,8 @@
 
 class CarController {
   public:
-
-  CarController();
-  void Start();
-
+    CarController();
+    void Start();
   private:
 
 

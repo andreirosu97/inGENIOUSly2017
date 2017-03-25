@@ -10,10 +10,11 @@ class CarClient {
     std::pair<const std::string, const int> serverAddress;
     int fd_socket;
     State state;
-    ~CarClient();
+
 
   public:
     CarClient(State state, std::pair<const std::string, const int> serverAddress);
+    ~CarClient();
     void Connect();
     void Start();
 
