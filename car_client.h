@@ -6,19 +6,19 @@
 
 class CarClient {
 
-private:
-  std::pair<std::string, int> serverAddress;
-  int fd_socket;
-  State state;
+  private:
+    pair<std::string, int> serverAddress;
+    int fd_socket;
+    State state;
+    ~CarClient();
 
-public:
+  public:
+    CarClient(State state, pair<std::string, int> serverAddress);
+    void Connect();
+    void Start();
 
-  CarClient(State state, std::pair<std::string, int> serverAddress);
-  void Connect();
-  void Start();
-
-private:
-  void SyncronizeState();
+  private:
+    void SyncronizeState();
 };
 
 #endif
