@@ -27,11 +27,10 @@ udp_client::~udp_client() {
 	close(f_socket);
 }
 
-
 void udp_client::send(const char *msg, size_t size) {//sending info at speed = 1 pack/100ns
-	struct timespec timeout;
-	timeout.tv_sec = 0;
-	timeout.tv_nsec = 100;
+  struct timespec timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_nsec = 100;
 	pselect(f_socket+1, NULL, NULL ,NULL , &timeout, NULL);
 	sendto(f_socket, msg, size, 0, (struct sockaddr *)&me,sizeof(me));
 	send(msg,size);
@@ -40,7 +39,7 @@ void udp_client::send(const char *msg, size_t size) {//sending info at speed = 1
 int main(int argc, char *argv[]) {
 	std::cout<<"Hello, this is the client!\n";
 	if(argc<2) {
-		fprintf(stderr,"No hostname recieved!\n");
+	  fprintf(stderr,"No hostname recieved!\n");
 		exit(EXIT_FAILURE);
 	}
 	udp_client client(argv[1]);

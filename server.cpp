@@ -9,7 +9,7 @@ udp_server::udp_server() {
 	    memset( (char*) &me ,0 ,sizeof(me));
 
 	    f_socket = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
-	    if(f_socket == -1)
+			if(f_socket == -1)
 				throw udp_client_server_runtime_error("could not create UDP socket for: \"");
 
 			me.sin_family = AF_INET;
@@ -39,13 +39,13 @@ void udp_server::timed_recv(char *msg, size_t max_size, int max_wait_sec) {
     timeout.tv_sec = max_wait_sec;
     timeout.tv_usec = 0;
     int retval = select(f_socket+1, &s, NULL ,NULL , &timeout);
-		
+
     if(retval == -1) {
 			std::cout<<"Select error!";
     } else if(retval==0) {
 	    std::cout<<"Server timed out!\n";
 	    return;
-		}	else {
+		} else {
       recv(f_socket, msg, max_size, 0);
       std::cout<<msg<<"\n";
       timed_recv(msg,max_size,max_wait_sec);

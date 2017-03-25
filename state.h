@@ -1,0 +1,4 @@
+
+class State {
+  int state;
+}
