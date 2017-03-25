@@ -39,7 +39,7 @@ void CarClient::Connect(){
 }
 
 CarClient::~CarClient(){
-    std::cout<<"CLOSING SERVER!\n";
+    std::cout<<"CLOSING CLIENT!\n";
     close(fd_socket);
 }
 
