@@ -1,4 +1,8 @@
 #include "car_client.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <thread>
 
 CarClient::CarClient(State state, pair<std::string, int> serverAddress):
@@ -34,6 +38,7 @@ CarClient::Start(){
 }
 
 CarCliet::SyncronizeState(){
+
   fd_set s;
   FD_ZERO(&s);
   FD_SET(f_socket, &s);
