@@ -49,6 +49,6 @@ void CarConnection::Start(){
 CarConnection::~CarConnection(){
     std::cout<<"CLOSING SOCKET!\n";
     close(fd_socket);
-    delete CarClient;
-    delete CarServer;
+    delete client;
+    delete server;
 }
