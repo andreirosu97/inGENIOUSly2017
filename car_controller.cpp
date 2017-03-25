@@ -1,7 +1,6 @@
 #include "car_controller.h"
-#include "car_client.h"
-#include "car_server.h"
 #include "car_state.h"
+#include "car_connection.h"
 
 CarController::CarController() {}
 
@@ -10,8 +9,8 @@ void CarController::Start() {
   std::string ip = "0.0.0.0";
   int port = 5000;
 
-  CarClient* client = new CarClient(state, make_pair(ip, port));
+  CarConnection* connection = new CarConnection(state, make_pair(ip, port));
 
-  client->Connect();
-  client->Start();
+  connection->Connect();
+  connection->Start();
 }
