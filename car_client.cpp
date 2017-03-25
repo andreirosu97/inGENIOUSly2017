@@ -12,7 +12,7 @@
 #include <cstdlib>
 
 
-CarClient::CarClient(State state, std::pair<const std::string, const int> serverAddress):
+CarClient::CarClient(CarState state, std::pair<const std::string, const int> serverAddress):
   state(state),
   serverAddress(serverAddress){}
 
@@ -49,26 +49,28 @@ void CarClient::Start(){
 }
 
 void CarClient::SyncronizeState(){
-  std::cout << "NU AM PORTIT";
+  /*Initializing variables */
   fd_set fd_reading;
-  FD_ZERO(&fd_reading);
-  FD_SET(fd_socket, &fd_reading);
-  struct timeval timeout;
-  timeout.tv_sec = 60;
-  timeout.tv_usec = 0;
-  std::cout << "Vom astepta dupa socket" << std::endl;
-  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
-
   char msg[500];
   int max_size = 500;
+  struct timeval timeout;
+  FD_ZERO(&fd_reading);
+  FD_SET(fd_socket, &fd_reading);
+  timeout.tv_sec = 60;
+  timeout.tv_usec = 0;
 
-  if(retval == -1) {
-    std::cout<<"Select error!";
-    }else if(retval==0) {
-      std::cout<<"Server timed out!\n";
-      return;
-      } else {
-        recv(fd_socket, msg, max_size, 0);
-        std::cout<<msg<<"\n";
+  /*Reading loop*/
+  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
+  while(retval>0){
+    recv(fd_socket, msg, max_size, 0);
+    std::cout<<msg<<"\n";
   }
+
+  /*Exit*/
+  if(retval == -1){
+    std::cout<<"Select error!";
+  }else{
+    std::cout<<"Server timed out!\n";
+  }
+  return;
 }

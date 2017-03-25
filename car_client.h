@@ -2,18 +2,18 @@
 #define _CAR_CLIENT_H_
 
 #include <string>
-#include "state.h"
+#include "car_state.h"
 
 class CarClient {
 
   private:
     std::pair<const std::string, const int> serverAddress;
     int fd_socket;
-    State state;
+    CarState state;
 
 
   public:
-    CarClient(State state, std::pair<const std::string, const int> serverAddress);
+    CarClient(CarState state, std::pair<const std::string, const int> serverAddress);
     ~CarClient();
     void Connect();
     void Start();
