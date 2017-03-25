@@ -47,11 +47,11 @@ void CarClient::SyncronizeState(){
 
   fd_set fd_reading;
   FD_ZERO(&fd_reading);
-  FD_SET(fd_socket, &s);
+  FD_SET(fd_socket, &fd_reading);
   struct timeval timeout;
   timeout.tv_sec = 60;
   timeout.tv_usec = 0;
-  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , NULL);
+  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
 
   if(retval == -1) {
     std::cout<<"Select error!";
