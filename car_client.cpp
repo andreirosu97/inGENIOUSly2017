@@ -8,6 +8,7 @@
 #include <thread>
 #include <iostream>
 #include <ctime>
+#include <cstring>
 #include <cstdlib>
 
 

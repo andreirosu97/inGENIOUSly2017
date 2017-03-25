@@ -14,7 +14,7 @@ udp_server::udp_server() {
 				throw udp_client_server_runtime_error("could not create UDP socket for: \"");
 
 			me.sin_family = AF_INET;
-			me.sin_port = htons(8889);
+			me.sin_port = htons(5000);
 			me.sin_addr.s_addr=htonl(INADDR_ANY);
 
 		 	if(bind( f_socket, (const sockaddr*) &me, sizeof(me))==-1) {

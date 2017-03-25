@@ -14,7 +14,7 @@ udp_client::udp_client(const char *hostname) {
 		throw udp_client_server_runtime_error("could not create UDP socket for: \"");
 
 	me.sin_family = AF_INET;
-	me.sin_port = htons(8889);
+	me.sin_port = htons(5000);
 	hostinfo= gethostbyname(hostname);
 	if(!hostinfo) {
 		fprintf(stderr,"Unknown host %s.\n",hostname);
