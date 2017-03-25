@@ -16,7 +16,6 @@ class CarClient {
   public:
     CarClient(CarState* state, int fd_socket);
     ~CarClient();
-    void Connect();
     void Start();
 
   private:

@@ -14,7 +14,7 @@ class CarServer {
     std::thread* ServerThread;
 
   public:
-    CarServer(CarState* state, int socket);
+    CarServer(CarState* state, int fd_socket);
     ~CarServer();
     void Start();
 
