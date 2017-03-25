@@ -4,11 +4,12 @@
 class CarController {
   public:
 
-  CarControler();
+  CarController();
   void Start();
 
   private:
 
 
-}
+};
+
 #endif

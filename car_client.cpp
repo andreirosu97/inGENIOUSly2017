@@ -4,3 +4,12 @@ CarClient::CarClient(State state, std::pair<std::string, int> serverAddress) :
   state(state),
   serverAddress(serverAddress)
   {}
+
+void CarClient::Connect() {
+
+}
+
+void CarClient::Start() {
+
+  
+}
