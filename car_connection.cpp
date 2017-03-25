@@ -42,13 +42,13 @@ void CarConnection::Start(){
   CarClient* client = new CarClient(state, fd_socket);
   CarServer* server = new CarServer(state, fd_socket);
 
-  client->start();
-  server->start();
+  client->Start();
+  server->Start();
 
   // GOD IS THE ONLY OWNER OF THESE OBJECTS
 }
 
-CarConection::~CarConection(){
+CarConnection::~CarConnection(){
     std::cout<<"CLOSING SERVER!\n";
     close(fd_socket);
 }

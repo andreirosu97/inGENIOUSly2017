@@ -1,5 +1,5 @@
-#ifndef _CAR_CLIENT_H_
-#define _CAR_CLIENT_H_
+#ifndef _CAR_SERVER_H_
+#define _CAR_SERVER_H_
 
 #include <string>
 #include "car_state.h"
