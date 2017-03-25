@@ -12,8 +12,8 @@
 #include <cstdlib>
 
 
-CarServer::CarServer(CarState* state, int socket):
-  state(state),fd_socket(socket),
+CarServer::CarServer(CarState* state, int fd_socket):
+  state(state),fd_socket(fd_socket),
   serverAddress(serverAddress){}
 
 CarServer::~CarServer(){
