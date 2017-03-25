@@ -9,8 +9,8 @@ void CarController::Start() {
   std::string ip = "0.0.0.0";
   int port = 5000;
 
-  CarClient client(state, make_pair(ip, port));
+  CarClient* client = new CarClient(state, make_pair(ip, port));
 
-  client.Connect();
-  client.Start();
+  client->Connect();
+  client->Start();
 }
