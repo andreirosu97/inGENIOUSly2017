@@ -6,7 +6,7 @@
 CarController::CarController() {}
 
 void CarController::Start() {
-  CarState state;
+  CarState* state = new CarState();
   std::string ip = "0.0.0.0";
   int port = 5000;
 

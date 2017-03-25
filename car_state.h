@@ -3,6 +3,7 @@
 #include <string>
 
 class CarState {
+public:
   int state;
   int new_message=0;
   std::string message;

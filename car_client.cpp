@@ -12,7 +12,7 @@
 #include <cstdlib>
 
 
-CarClient::CarClient(CarState state, std::pair<const std::string, const int> serverAddress):
+CarClient::CarClient(CarState* state, std::pair<const std::string, const int> serverAddress):
   state(state),
   serverAddress(serverAddress){}
 
@@ -64,6 +64,8 @@ void CarClient::SyncronizeState(){
   while(retval>0){
     recv(fd_socket, msg, max_size, 0);
     std::cout<<msg<<"\n";
+    state->new_message = true;
+    state->message = std::string(msg);
   }
 
   /*Exit*/
