@@ -11,7 +11,7 @@
 #include <cstdlib>
 
 
-CarClient::CarClient(State state, std::pair<const std::string, const int> serverAddress):
+CarClient::CarClient(CarState state, std::pair<const std::string, const int> serverAddress):
   state(state),
   serverAddress(serverAddress){}
 

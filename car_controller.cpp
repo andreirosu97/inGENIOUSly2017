@@ -1,11 +1,12 @@
 #include "car_controller.h"
 #include "car_client.h"
 #include "car_server.h"
+#include "car_state.h"
 
 CarController::CarController() {}
 
 void CarController::Start() {
-  State state;
+  CarState state;
   std::string ip = "0.0.0.0";
   int port = 5000;
 
