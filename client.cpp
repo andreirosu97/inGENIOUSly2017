@@ -28,12 +28,13 @@ udp_client::~udp_client() {
 }
 
 void udp_client::send(const char *msg, size_t size) {//sending info at speed = 1 pack/100ns
-  struct timespec timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_nsec = 100;
-	pselect(f_socket+1, NULL, NULL ,NULL , &timeout, NULL);
+
 	sendto(f_socket, msg, size, 0, (struct sockaddr *)&me,sizeof(me));
-	send(msg,size);
+
+	char msgr[500];
+  int max_size = 500;
+	recv(f_socket, msgr, max_size, 0);
+	std::cout<<msgr<<"\n";
 }
 
 int main(int argc, char *argv[]) {
