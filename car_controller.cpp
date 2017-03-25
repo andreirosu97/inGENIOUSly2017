@@ -11,7 +11,4 @@ void CarController::Start() {
 
   client.Connect();
   client.Start();
-
-
-
 }

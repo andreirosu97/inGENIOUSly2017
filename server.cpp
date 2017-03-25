@@ -9,6 +9,7 @@ udp_server::udp_server() {
 	    memset( (char*) &me ,0 ,sizeof(me));
 
 	    f_socket = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
+
 			if(f_socket == -1)
 				throw udp_client_server_runtime_error("could not create UDP socket for: \"");
 

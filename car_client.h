@@ -7,13 +7,13 @@
 class CarClient {
 
   private:
-    pair<std::string, int> serverAddress;
+    std::pair<const std::string, const int> serverAddress;
     int fd_socket;
     State state;
     ~CarClient();
 
   public:
-    CarClient(State state, pair<std::string, int> serverAddress);
+    CarClient(State state, std::pair<const std::string, const int> serverAddress);
     void Connect();
     void Start();
 

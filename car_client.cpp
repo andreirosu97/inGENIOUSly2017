@@ -4,27 +4,32 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #include <thread>
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
 
-CarClient::CarClient(State state, pair<std::string, int> serverAddress):
-  state{state},
-  serverAddress{serverAddress}{}
 
-CarClient::Connect(){
+CarClient::CarClient(State state, std::pair<const std::string, const int> serverAddress):
+  state(state),
+  serverAddress(serverAddress){}
+
+void CarClient::Connect(){
   struct sockaddr_in SocketClient;
   memset( (char*) &SocketClient ,0 ,sizeof(SocketClient));
 
-  fd_socket = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
-  if(fd_socket == -1)
-    throw udp_client_server_runtime_error("Could not create UDP socket!\n");
+  fd_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  //if(fd_socket == -1)
+  //  throw udp_client_server_runtime_error("Could not create UDP socket!\n");
 
   SocketClient.sin_family = AF_INET;
-  SocketClient.sin_port = htons(serverData.second);
-  SocketClient.sin_addr.s_addr=htonl(serverData.first);
+  SocketClient.sin_port = htons(serverAddress.second);
+  SocketClient.sin_addr.s_addr=inet_addr(serverAddress.first.data());
 
   if(bind( fd_socket, (const sockaddr*) &SocketClient, sizeof(SocketClient))==-1) {
     close(fd_socket);
-    throw udp_client_server_runtime_error("Could not bind UDP socket with: \n" );
+    //throw udp_client_server_runtime_error("Could not bind UDP socket with: \n" );
   }
 }
 
@@ -33,20 +38,20 @@ CarClient::~CarClient(){
     close(fd_socket);
 }
 
-CarClient::Start(){
-  std::thread SyncronizeStateThread(&CarClient::SyncronizeState,this);
-  SyncronizeStateThread.detatch();
+void CarClient::Start(){
+  std::thread SyncronizeStateThread(&CarClient::SyncronizeState, this);
+  SyncronizeStateThread.detach();
 }
 
-CarCliet::SyncronizeState(){
+void CarClient::SyncronizeState(){
 
   fd_set s;
   FD_ZERO(&s);
-  FD_SET(f_socket, &s);
+  FD_SET(fd_socket, &s);
   struct timeval timeout;
   timeout.tv_sec = ;
   timeout.tv_usec = 0;
-  int retval = select(f_socket+1, &s, NULL ,NULL , &timeout);
+  int retval = select(fd_socket+1, &s, NULL ,NULL , NULL);
 
   if(retval == -1) {
     std::cout<<"Select error!";
