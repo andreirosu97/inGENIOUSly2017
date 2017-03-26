@@ -28,8 +28,8 @@ void CarClient::Start(){
 void CarClient::SyncronizeState(){
   /*Initializing variables */
   fd_set fd_reading;
-  char msg[500];
-  int max_size = 500;
+  char msg[60]="Mesaj!";
+  int max_size = 60;
   struct timeval timeout;
   FD_ZERO(&fd_reading);
   FD_SET(fd_socket, &fd_reading);
@@ -47,15 +47,17 @@ void CarClient::SyncronizeState(){
       std::cout<<"Server timed out!\n";return;
     }
     else{
-      recv(fd_socket, msg, max_size, 0);
-      state->new_message = true;
-      state->message = std::string(msg);
-      if(state->message=="STOP")
-        state->shut_down=1;
+        if(!state->new_message){
+          recv(fd_socket, msg, max_size, 0);
+          std::cout<<"Receptionat: "<<msg<<"!\n";
+          state->new_message = true;
+          state->message = std::string(msg);
+          if(state->message=="STOP")
+            state->shut_down=1;
+          sleep(1);
+        }
       }
-  }
-
+    }
   /*Exit*/
-
   return;
 }

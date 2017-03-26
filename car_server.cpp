@@ -35,14 +35,16 @@ void CarServer::SyncronizeState(){
   s.sin_family = AF_INET;
   s.sin_port = htons(5000);
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-
+  
+  int i=0;
   while(true){
     if(state->new_message){
       state->new_message = false;
-      std::cout<<state->message<<"\n";
-      snprintf(msg,60,"Am primit mesajul %s",state->message.data());
+      std::cout<<"\n In server am primit: "<<state->message.data()<<"\n";
+      snprintf(msg,60,"Mesajul %d.",i++);
       msglen = 60;
       sendto(fd_socket,msg,msglen,0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
+      sleep(1);
     }
   }
 }
