@@ -1,12 +1,14 @@
 #ifndef _CAR_STATE_H_
 #define _CAR_STATE_H_
 #include <string>
+#include <queue>
+#include <mutex>
 
 class CarState {
 private:
   int state;
-  int shut_down=0;//car client sets it
-  queue<std::string> message;
+  int shutdown=0;//car client sets it
+  std::queue<std::string> message;
   std::mutex update_state;
 
 public:
@@ -23,9 +25,12 @@ public:
     message.pop();
     return current_message;
   }
-  
+
   void shut_down() {
-    show_down = true;
+    shutdown = true;
+  }
+  bool is_shutting_down() {
+    return shutdown;
   }
 };
 

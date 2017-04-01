@@ -13,7 +13,7 @@ void CarController::Start() {
   connection->Start();
   while(true)
   {
-    if(state->shut_down){
+    if(state->is_shutting_down()){
       break;
     }
     sleep(1);
