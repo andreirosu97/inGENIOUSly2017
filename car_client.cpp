@@ -1,5 +1,3 @@
-
-
 #include "car_client.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,7 +8,6 @@
 #include <ctime>
 #include <cstring>
 #include <cstdlib>
-
 
 CarClient::CarClient(CarState* state, int fd_socket):
   state(state),

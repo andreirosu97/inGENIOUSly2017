@@ -26,25 +26,18 @@ void CarServer::Start(){
 }
 
 void CarServer::SyncronizeState(){
-
-  char msg[60];
-  int msglen=39;
-
   struct sockaddr_in s;
 
   s.sin_family = AF_INET;
   s.sin_port = htons(5000);
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-
-  int i=0;
   while(true){
     if(state->new_message){
       state->new_message = false;
-      std::cout<<"\n In server am primit: "<<state->message.data()<<"\n";
-      snprintf(msg,60,"Mesajul %d.",i++);
-      msglen = 60;
-      sendto(fd_socket,msg,msglen,0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
-      sleep(1);
+      std::cout<<"\n Am trimis: " << state->message<< "\n";
+      state->message= state->message + " BINGO\n";
+      sendto(fd_socket,state->message.data(),state->message.size(),0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
+      sleep(1)
     }
   }
 }
