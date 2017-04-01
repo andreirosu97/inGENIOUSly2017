@@ -35,7 +35,7 @@ void CarServer::SyncronizeState(){
   s.sin_family = AF_INET;
   s.sin_port = htons(5000);
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-  
+
   int i=0;
   while(true){
     if(state->new_message){
