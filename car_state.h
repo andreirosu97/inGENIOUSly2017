@@ -7,11 +7,6 @@
 class CarState {
 private:
   int state;
-<<<<<<< HEAD
-  int new_message=0;
-  int shut_down=0;//car client sets it
-  std::string message;
-=======
   int shutdown=0;//car client sets it
   std::queue<std::string> message;
   std::mutex update_state;
@@ -30,7 +25,6 @@ public:
     message.pop();
     return current_message;
   }
->>>>>>> 64bef079d66c45f9a0d2b5bfd2b22f62729bcc2c
 
   void shut_down() {
     shutdown = true;

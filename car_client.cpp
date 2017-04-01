@@ -39,10 +39,10 @@ void CarClient::SyncronizeState(){
   while(true){
     retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
     if(retval == -1){
-      std::cout<<"Select error!";state->shut_down=1;return;
+      std::cout<<"Select error!";state->shut_down();return;
     }else if(retval ==0){
       std::cout<<"Server timed out!\n";
-      state->shut_down=1;
+      state->shut_down();
       return;
     }
     else{
