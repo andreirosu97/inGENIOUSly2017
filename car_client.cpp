@@ -44,14 +44,12 @@ void CarClient::SyncronizeState(){
       std::cout<<"Server timed out!\n";return;
     }
     else{
-        if(!state->new_message){
           int recv_size = recv(fd_socket, msg, max_size, 0);
           msg[recv_size] = '\0';
           std::cout<<"Receptionat: "<<msg<<"!\n";
-          state->new_message = true;
-          state->message = std::string(msg);
-          if(state->message=="STOP")
-            state->shut_down=1;
+          state->update_message(std::string(msg));
+          if(std::string(msg) == "STOP") 
+            state->shut_down();
         }
       }
     }
