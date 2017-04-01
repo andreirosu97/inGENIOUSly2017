@@ -1,5 +1,3 @@
-
-
 #include "car_client.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,7 +8,6 @@
 #include <ctime>
 #include <cstring>
 #include <cstdlib>
-
 
 CarClient::CarClient(CarState* state, int fd_socket):
   state(state),
@@ -37,11 +34,14 @@ void CarClient::SyncronizeState(){
   timeout.tv_usec = 0;
 
   /*Reading loop*/
-  int retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
+  int retval;
   while(retval>0){
-    recv(fd_socket, msg, max_size, 0);
+    retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
+    int size = recv(fd_socket, msg, max_size, 0);
+    msg[size] = '\0';
     state->new_message = true;
     state->message = std::string(msg);
+    std::cout << "\n Am primit: " << std::string(msg) << "\n";
     if(state->message=="STOP")
       state->shut_down=1;
   }
