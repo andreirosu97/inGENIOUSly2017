@@ -37,7 +37,7 @@ void CarServer::SyncronizeState(){
       std::cout<<"\n Am trimis: " << state->message<< "\n";
       state->message= state->message + " BINGO\n";
       sendto(fd_socket,state->message.data(),state->message.size(),0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
-      sleep(1)
+      sleep(1);
     }
   }
 }
