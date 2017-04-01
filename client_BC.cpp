@@ -34,10 +34,14 @@ int main(int argc, char* argv[])
     send_addr.sin_port = (in_port_t) htons(5000);
     // broadcasting address for unix (?)
     inet_aton("255.255.255.255", &send_addr.sin_addr);
+<<<<<<< HEAD
     // send_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 #endif // ! RECV_ONLY
 
 #ifndef SEND_ONLY
+=======
+
+>>>>>>> 7fde787251a2a258596e42dbfe1ffb6629c3fb77
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,
                    &trueflag, sizeof trueflag) < 0)
         errno_abort("setsockopt");
@@ -49,10 +53,15 @@ int main(int argc, char* argv[])
 
     if (bind(fd, (struct sockaddr*) &recv_addr, sizeof recv_addr) < 0)
         errno_abort("bind");
+<<<<<<< HEAD
 #endif // ! SEND_ONLY
 
     while ( 1 ) {
 #ifndef RECV_ONLY
+=======
+
+    while ( 1 ) {
+>>>>>>> 7fde787251a2a258596e42dbfe1ffb6629c3fb77
         char sbuf[256] = {};
         snprintf(sbuf, sizeof(sbuf), "Hello(%d)!", count++);
         if (sendto(fd, sbuf, strlen(sbuf)+1, 0,
@@ -60,14 +69,21 @@ int main(int argc, char* argv[])
             errno_abort("send");
         printf("send: %s\n", sbuf);
         usleep(1000000/2);
+<<<<<<< HEAD
 #endif // ! RECV_ONLY
 
 #ifndef SEND_ONLY
+=======
+
+>>>>>>> 7fde787251a2a258596e42dbfe1ffb6629c3fb77
         char rbuf[256] = {};
         if (recv(fd, rbuf, sizeof(rbuf)-1, 0) < 0)
             errno_abort("recv");
         printf("recv: %s\n", rbuf);
+<<<<<<< HEAD
 #endif // ! SEND_ONLY
+=======
+>>>>>>> 7fde787251a2a258596e42dbfe1ffb6629c3fb77
     }
     close(fd);
     return 0;

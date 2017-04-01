@@ -25,8 +25,8 @@ void CarClient::Start(){
 void CarClient::SyncronizeState(){
   /*Initializing variables */
   fd_set fd_reading;
-  char msg[500];
-  int max_size = 500;
+  char msg[60]="Mesaj!";
+  int max_size = 60;
   struct timeval timeout;
   FD_ZERO(&fd_reading);
   FD_SET(fd_socket, &fd_reading);
@@ -35,22 +35,26 @@ void CarClient::SyncronizeState(){
 
   /*Reading loop*/
   int retval;
-  while(retval>0){
-    retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
-    int size = recv(fd_socket, msg, max_size, 0);
-    msg[size] = '\0';
-    state->new_message = true;
-    state->message = std::string(msg);
-    std::cout << "\n Am primit: " << std::string(msg) << "\n";
-    if(state->message=="STOP")
-      state->shut_down=1;
-  }
 
+  while(true){
+    retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
+    if(retval == -1){
+      std::cout<<"Select error!";return;
+    }else if(retval ==0){
+      std::cout<<"Server timed out!\n";return;
+    }
+    else{
+        if(!state->new_message){
+          recv(fd_socket, msg, max_size, 0);
+          std::cout<<"Receptionat: "<<msg<<"!\n";
+          state->new_message = true;
+          state->message = std::string(msg);
+          if(state->message=="STOP")
+            state->shut_down=1;
+          sleep(1);
+        }
+      }
+    }
   /*Exit*/
-  if(retval == -1){
-    std::cout<<"Select error!";
-  }else{
-    std::cout<<"Server timed out!\n";
-  }
   return;
 }

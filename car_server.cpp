@@ -35,9 +35,9 @@ void CarServer::SyncronizeState(){
     if(state->new_message){
       state->new_message = false;
       std::cout<<"\n Am trimis: " << state->message<< "\n";
-      state->message = state->message + "o iubi pe mica stea";
-      //snprintf(msg,60,"Am primit mesajul %s",state->message.data());
+      state->message= state->message + " BINGO\n";
       sendto(fd_socket,state->message.data(),state->message.size(),0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
+      sleep(1)
     }
   }
 }
