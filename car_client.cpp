@@ -46,15 +46,13 @@ void CarClient::SyncronizeState(){
       return;
     }
     else{
-          int recv_size = recv(fd_socket, msg, max_size, 0);
-          msg[recv_size] = '\0';
-          state->message = std::string(msg);
-          std::cout<<"De la PC am receptionat: "<<state->message.data();
-          state->new_message = true;
-          if(state->message=="STOP")
-            state->shut_down=1;
-      }
+        int recv_size = recv(fd_socket, msg, max_size, 0);
+        msg[recv_size] = '\0';
+        std::cout<<"Receptionat: "<<msg<<"!\n";
+        state->update_message(std::string(msg));
+        if(std::string(msg) == "STOP")
+          state->shut_down();
     }
-  /*Exit*/
+  }
   return;
 }
