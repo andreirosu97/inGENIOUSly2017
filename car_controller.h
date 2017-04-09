@@ -6,8 +6,10 @@
 
 class CarController {
   private:
-    CarConnection* connection; // OWNER
-    CarState* state; // OWNER
+    std::unique_ptr<CarConnection> connection;
+    std::unique_ptr<CarState> state;
+    std::unique_ptr<CarMotor> motor;
+
   public:
     CarController();
     ~CarController();

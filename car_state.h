@@ -17,18 +17,17 @@ public:
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
-    if(diretion == "SHUTDOWN"){
+    if(diretion == "SHUTDOWN") {
         this->diretion=this->speed=0;
         shut_down();
+    } else if(direction=="FORWARD") {
+        this->direction=1;
+    } else if(direction=="BACKWARD") {
+        this->direction=-1;
+    } else if(direction=="STOP"){
+        this->direction=0;
+        this->speed=0;
     }
-    else if(direction=="FORWARD")
-          this->direction=1;
-         else if(direction=="BACKWARD")
-                this->direction=-1;
-              else if(direction=="STOP"){
-                    this->direction=0;
-                    this->speed=0;
-                  }
   }
 
   void update_motor_speed(int speed):speed(speed){}

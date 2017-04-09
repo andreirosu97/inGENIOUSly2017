@@ -3,11 +3,12 @@
 CarController::CarController() {}
 
 void CarController::Start() {
-  state = new CarState();
   std::string ip = "0.0.0.0";
   int port = 5000;
 
-  connection = new CarConnection(state, make_pair(ip, port));
+  state = std::make_unique<CarState>();
+  connection = std::make_unique<CarConnection>(state.get(), make_pair(ip, port));
+  motor = std::make_unique<CarMotor>(state.get());
 
   connection->Connect();
   connection->Start();
@@ -22,6 +23,4 @@ void CarController::Start() {
 }
 
 CarController::~CarController() {
-  delete state;
-  delete connection;
 }
