@@ -67,7 +67,7 @@ void CarClient::SyncronizeState(){
         else//Single argument message
           state->update_motor_direction(message);
     }
-    get_sate();
+    state->get_state();
   }
   return;
 }
