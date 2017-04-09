@@ -42,8 +42,9 @@ public:
   }
 
   void get_state(){
-    std::cout<<"Speed:"<<this->speed;
-    std::cout<<"Direction"<<this->direction;
+    std::cout<<"Speed:"<<this->speed<<'\n';
+    std::cout<<"Direction:"<<this->direction<<'\n';
+    std:cout<<"Shut down:"<<this->shutdown<<'\n';
   }
 
   void shut_down() {
