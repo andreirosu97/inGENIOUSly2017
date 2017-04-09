@@ -4,6 +4,7 @@
 #include "car_state.h"
 #include "car_connection.h"
 #include "car_motor.h"
+#include <iostream>
 
 class CarController {
   private:
@@ -13,7 +14,7 @@ class CarController {
 
   public:
     CarController();
-    ~CarController() {};
+    ~CarController() {std::cout<<"CAR IS SHUTTING DOWN!\n";};
     void Start();
   private:
 

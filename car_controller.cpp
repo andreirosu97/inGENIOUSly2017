@@ -14,7 +14,7 @@ void CarController::Start() {
   connection->Start();
 
   motor->Start();
-  
+
   while(true)
   {
     if(state->is_shutting_down()){
