@@ -2,6 +2,7 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <softPwm.h>
+#include <unistd.h>
 
 void CarMotor::Start() {
   if(wiringPiSetup() < 0) {

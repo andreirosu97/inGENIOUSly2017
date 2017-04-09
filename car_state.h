@@ -21,14 +21,14 @@ public:
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
-    if(direction == "SHUTDOWN"){
+    if(direction == "SD"){
         this->direction=this->speed=0;
         shut_down();
-    } else if(direction=="FORWARD") {
+    } else if(direction=="F") {
         this->direction=1;
-    } else if(direction=="BACKWARD") {
+    } else if(direction=="B") {
         this->direction=-1;
-    } else if(direction=="STOP"){
+    } else if(direction=="S"){
         this->direction=0;
         this->speed=0;
     }
