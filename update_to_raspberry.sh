@@ -1,1 +1,1 @@
-scp -r . pi@raspberrypi:~/Desktop
+scp -r . pi@raspberrypi:~/Desktop/conti-contest
