@@ -25,7 +25,7 @@ void CarClient::Start(){
 void CarClient::SyncronizeState(){
   /*Initializing variables */
   fd_set fd_reading;
-  char msg[60]="Mesaj!";
+  char msg[60];
   int max_size = 60;
   struct timeval timeout;
   FD_ZERO(&fd_reading);
@@ -39,9 +39,11 @@ void CarClient::SyncronizeState(){
   while(true){
     retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
     if(retval == -1){
-      std::cout<<"Select error!";return;
+      std::cout<<"Select error!";state->shut_down();return;
     }else if(retval ==0){
-      std::cout<<"Server timed out!\n";return;
+      std::cout<<"Server timed out!\n";
+      state->shut_down();
+      return;
     }
     else{
         int recv_size = recv(fd_socket, msg, max_size, 0);
