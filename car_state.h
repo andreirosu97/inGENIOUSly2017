@@ -3,6 +3,7 @@
 #include <string>
 #include <queue>
 #include <mutex>
+#include <iostream>
 
 class CarState {
 private:
@@ -17,8 +18,8 @@ public:
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
-    if(diretion == "SHUTDOWN") {
-        this->diretion=this->speed=0;
+    if(direction == "SHUTDOWN"){
+        this->direction=this->speed=0;
         shut_down();
     } else if(direction=="FORWARD") {
         this->direction=1;
@@ -30,7 +31,9 @@ public:
     }
   }
 
-  void update_motor_speed(int speed):speed(speed){}
+  void update_motor_speed(int speed){
+    this->speed=speed;
+  }
 
   std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
@@ -43,7 +46,7 @@ public:
   void get_state(){
     std::cout<<"Speed:"<<this->speed<<'\n';
     std::cout<<"Direction:"<<this->direction<<'\n';
-    std:cout<<"Shut down:"<<this->shutdown<<'\n';
+    std::cout<<"Shut down:"<<this->shutdown<<'\n';
   }
 
   void shut_down() {
