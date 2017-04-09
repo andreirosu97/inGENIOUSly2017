@@ -46,5 +46,8 @@ void CarMotor::SyncronizeState() {
 }
 
 CarMotor::~CarMotor() {
+  digitalWrite(PWN_PIN, LOW);
+  digitalWrite(PIN_1, LOW);
+  digitalWrite(PIN_2, LOW);
   delete motor_thread;
 }
