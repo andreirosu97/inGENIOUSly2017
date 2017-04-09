@@ -25,7 +25,7 @@ void CarClient::Start(){
 void CarClient::SyncronizeState(){
   /*Initializing variables */
   fd_set fd_reading;
-  char msg[60];
+
   int max_size = 60;
   struct timeval timeout;
   FD_ZERO(&fd_reading);
@@ -46,11 +46,24 @@ void CarClient::SyncronizeState(){
       return;
     }
     else{
+        char msg[60];
         int recv_size = recv(fd_socket, msg, max_size, 0);
+        int speed=0;
+        std::string message;
         msg[recv_size] = '\0';
+        message=str::string(msg);
+
         std::cout<<"Receptionat: "<<msg<<"!\n";
-        state->update_message(std::string(msg));
-        if(std::string(msg) == "STOP")
+
+        std::size_t pos = msg.find(" ");
+
+        std::string string_speed;
+        std::string string_speed = message.substr (pos);
+
+        speed=std::stoi(string_speed);
+        state->update_motor_state(direction,speed);
+
+        if(message == "STOP")
           state->shut_down();
     }
   }

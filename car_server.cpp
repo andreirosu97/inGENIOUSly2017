@@ -27,16 +27,14 @@ void CarServer::Start(){
 
 void CarServer::SyncronizeState(){
   struct sockaddr_in s;
+  std::string curent_position = "This car is amazing !";
 
   s.sin_family = AF_INET;
   s.sin_port = htons(5001);
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
   while(true){
-    if(state->is_message()){
-      std::string message = state->get_message();
-      std::cout<<"\n Am trimis: " << message << "\n";
-      sendto(fd_socket,message.data(),message.size(),0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
-      }
+          sendto(fd_socket,curent_position.data(),curent_position.size(),0,(struct sockaddr *)&s, sizeof(struct sockaddr_in));
+          sleep(0.1);
   }
 }

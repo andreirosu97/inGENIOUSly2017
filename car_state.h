@@ -6,29 +6,40 @@
 
 class CarState {
 private:
-  int state;
+  int direction=0;
+  int speed=0;
+
   int shutdown=0;//car client sets it
-  std::queue<std::string> message;
+
   std::mutex update_state;
 
 public:
-  void update_message(std::string message) {
+  void update_motor_state(std::string direction, int speed) {
     std::lock_guard<std::mutex> guard(update_state);
-    this->message.push(message);
+
+    this->speed=speed;
+    if(direction=="FORWARD")
+      this->direction=1;
+    else if(direction=="BACKWARD")
+        this->direction=-1;
+        else if(direction=="STOP"){
+          this->direction=0;
+          this->speed=0;
+          }
   }
-  bool is_message() {
-    return message.size() > 0;
-  }
-  std::string get_message() { // daca nu exista mesaj?
+
+  std::pair get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
-    std::string current_message = message.front();
-    message.pop();
-    return current_message;
+
+    std::pair<int,int> motor_state;
+    motor_spate= std::make_pair(this->direction,this->speed);
+    return motor_state;
   }
 
   void shut_down() {
     shutdown = true;
   }
+
   bool is_shutting_down() {
     return shutdown;
   }
