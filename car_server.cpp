@@ -67,6 +67,6 @@ void CarServer::SyncronizeState(){
   std::string curent_position = "This car is amazing !";
   while(true){
     SendMessage(curent_position);
-    sleep(0.1);
+    sleep(3);
   }
 }

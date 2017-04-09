@@ -51,21 +51,23 @@ void CarClient::SyncronizeState(){
         int speed=0;
         std::string message;
         msg[recv_size] = '\0';
-        message=str::string(msg);
+        message=std::string(msg);
 
-        std::cout<<"Receptionat: "<<msg<<"!\n";
+        std::cout<<"Receptionat: "<<message<<"!\n";
 
-        std::size_t pos = msg.find(" ");
+        std::size_t pos = message.find(" ");
 
-        std::string string_speed;
-        std::string string_speed = message.substr (pos);
-
-        speed=std::stoi(string_speed);
-        state->update_motor_state(direction,speed);
-
-        if(message == "STOP")
-          state->shut_down();
+        if(pos<message.size()){// Message of 2 arguments
+          std::string string_speed = message.substr (pos);
+          message=message.substr (0,pos);
+          speed=std::stoi(string_speed);
+          state->update_motor_direction(message);
+          state->update_motor_speed(speed);
+        }
+        else//Single argument message
+          state->update_motor_direction(message);
     }
+    
   }
   return;
 }

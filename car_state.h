@@ -14,26 +14,36 @@ private:
   std::mutex update_state;
 
 public:
-  void update_motor_state(std::string direction, int speed) {
-    std::lock_guard<std::mutex> guard(update_state);
 
-    this->speed=speed;
-    if(direction=="FORWARD")
-      this->direction=1;
-    else if(direction=="BACKWARD")
-        this->direction=-1;
-        else if(direction=="STOP"){
-          this->direction=0;
-          this->speed=0;
-          }
+  void update_motor_direction(std::string direction) {
+    std::lock_guard<std::mutex> guard(update_state);
+    if(diretion == "SHUTDOWN"){
+        this->diretion=this->speed=0;
+        shut_down();
+    }
+    else if(direction=="FORWARD")
+          this->direction=1;
+         else if(direction=="BACKWARD")
+                this->direction=-1;
+              else if(direction=="STOP"){
+                    this->direction=0;
+                    this->speed=0;
+                  }
   }
 
-  std::pair get_motor_state() { // daca nu exista mesaj?
+  void update_motor_speed(int speed):speed(speed){}
+
+  std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
 
     std::pair<int,int> motor_state;
-    motor_spate= std::make_pair(this->direction,this->speed);
+    motor_state= std::make_pair(this->direction,this->speed);
     return motor_state;
+  }
+
+  void get_state(){
+    std::cout<<"Speed:"<<this->speed;
+    std::cout<<"Direction"<<this->direction;
   }
 
   void shut_down() {
