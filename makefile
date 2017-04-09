@@ -9,7 +9,7 @@ car_controller.o: car_controller.cpp car_controller.h
 car_connection.o: car_connection.cpp car_connection.h
 	g++ -std=c++11 -I . -c car_connection.cpp
 car_motor.o: car_motor.cpp car_motor.h
-		g++ -std=c++11 -lwiringPi -I . -c car_motor.cpp
+	g++ -std=c++11 -I . -c car_motor.cpp
 main.o: main.cpp
 	g++ -std=c++11 -I . -c main.cpp
 clean:

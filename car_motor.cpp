@@ -1,6 +1,5 @@
 #include "car_motor.h"
 #include <iostream>
-#include <thread>
 #include <wiringPi.h>
 #include <softPwm.h>
 
