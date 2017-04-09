@@ -13,7 +13,7 @@ class CarController {
 
   public:
     CarController();
-    ~CarController();
+    ~CarController() {};
     void Start();
   private:
 

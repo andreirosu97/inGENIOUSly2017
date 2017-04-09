@@ -13,13 +13,15 @@ class CarClient {
     CarState* state;
     std::thread* client_thread; // OWNER
 
+    void SyncronizeState();
+
   public:
     CarClient(CarState* state, int fd_socket);
     ~CarClient();
     void Start();
 
   private:
-    void SyncronizeState();
+
 };
 
 #endif

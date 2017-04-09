@@ -12,6 +12,9 @@ void CarController::Start() {
 
   connection->Connect();
   connection->Start();
+
+  motor->Start();
+  
   while(true)
   {
     if(state->is_shutting_down()){
@@ -20,7 +23,4 @@ void CarController::Start() {
     sleep(1);
   }
 
-}
-
-CarController::~CarController() {
 }

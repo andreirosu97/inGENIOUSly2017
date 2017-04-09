@@ -15,6 +15,9 @@ private:
   std::mutex update_state;
 
 public:
+  int get_direction() {
+    return direction;
+  }
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
