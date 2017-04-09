@@ -36,6 +36,7 @@ std::string CarServer::GetIPAddress() {
 
 }
 
+
 void CarServer::SendIPAddress() {
   std::string ipAddr = GetIPAddress();
   SendMessage(ipAddr);
@@ -56,12 +57,12 @@ void CarServer::SendMessage(std::string message) {
   sendto(fd_socket, message.data(), message.size(), 0, (struct sockaddr *)&s, sizeof(struct sockaddr_in));
 }
 
+
 void CarServer::SyncronizeState(){
+  struct sockaddr_in s;
+  std::string curent_position = "This car is amazing !";
   while(true){
-    if(state->is_message()){
-      std::string message = state->get_message();
-      std::cout<<"\n Am trimis: " << message << "\n";
-      SendMessage(message);
-      }
+    SendMessage(curent_position);
+    sleep(0.1);
   }
 }
