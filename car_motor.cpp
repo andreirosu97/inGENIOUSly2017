@@ -3,7 +3,7 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-void Start() {
+void CarMotor::Start() {
   if(wiringPiSetup() < 0) {
     std::cout << "Nu a mers wiringPiSetupul";
     state->shut_down();
