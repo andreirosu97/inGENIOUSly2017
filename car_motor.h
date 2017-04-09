@@ -9,7 +9,7 @@
 #define PIN_2 2
 
 class CarMotor {
-  private:
+private:
     CarState* state;
     std::thread* motor_thread;
 
