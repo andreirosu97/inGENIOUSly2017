@@ -37,37 +37,27 @@ void CarClient::SyncronizeState(){
   int retval;
 
   while(true){
-    retval = select(fd_socket+1, &fd_reading, NULL ,NULL , &timeout);
-    if(retval == -1){
-      std::cout<<"Select error!";state->shut_down();return;
-    }else if(retval ==0){
-      std::cout<<"Server timed out!\n";
-      state->shut_down();
-      return;
-    }
-    else{
-        char msg[60];
-        int recv_size = recv(fd_socket, msg, max_size, 0);
-        int speed=0;
-        std::string message;
-        msg[recv_size] = '\0';
-        message=std::string(msg);
+      char msg[60];
+      int recv_size = recv(fd_socket, msg, max_size, 0);
+      int speed=0;
+      std::string message;
+      msg[recv_size] = '\0';
+      message=std::string(msg);
 
-        std::cout<<"Receptionat: "<<message<<"!\n";
+      std::cout<<"Receptionat: "<<message<<"!\n";
 
-        std::size_t pos = message.find(" ");
+      std::size_t pos = message.find(" ");
 
-        if(pos<message.size()){// Message of 2 arguments
-          std::string string_speed = message.substr (pos);
-          message=message.substr (0,pos);
-          speed=std::stoi(string_speed);
-          state->update_motor_direction(message);
-          state->update_motor_speed(speed);
-        }
-        else//Single argument message
-          state->update_motor_direction(message);
-    }
-    state->get_state();
+      if(pos<message.size()){// Message of 2 arguments
+        std::string string_speed = message.substr (pos);
+        message=message.substr (0,pos);
+        speed=std::stoi(string_speed);
+        state->update_motor_direction(message);
+        state->update_motor_speed(speed);
+      }
+      else//Single argument message
+        state->update_motor_direction(message);
+      state->get_state();
   }
   return;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <softPwm.h>
+#include <unistd.h>
 
 void CarMotor::Start() {
   if(wiringPiSetup() < 0) {
@@ -27,12 +28,15 @@ void CarMotor::SetSpeed(int speed) {
 }
 
 void CarMotor::SetDirection(int direction) {
-  if (direction) {
+  if (direction == 1) {
     digitalWrite(PIN_1, HIGH);
     digitalWrite(PIN_2, LOW);
-  } else {
+  } else if(direction == -1){
     digitalWrite(PIN_1, LOW);
     digitalWrite(PIN_2, HIGH);
+  }else if(direction == 0){
+    digitalWrite(PIN_1, LOW);
+    digitalWrite(PIN_2, LOW);
   }
 }
 
@@ -46,8 +50,8 @@ void CarMotor::SyncronizeState() {
 }
 
 CarMotor::~CarMotor() {
-  digitalWrite(PWN_PIN, LOW);
+  delete motor_thread;
+  digitalWrite(PWM_PIN, LOW);
   digitalWrite(PIN_1, LOW);
   digitalWrite(PIN_2, LOW);
-  delete motor_thread;
 }
