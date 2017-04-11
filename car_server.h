@@ -28,14 +28,13 @@ private:
     std::string GetIPAddress();
     void SendIPAddress();
     void SendMessage(std::string message);
+    void SyncronizeState();
 
   public:
     CarServer(CarState* state, int fd_socket);
     ~CarServer();
     void Start();
 
-  private:
-    void SyncronizeState();
 };
 
 #endif

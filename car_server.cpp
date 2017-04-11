@@ -39,6 +39,8 @@ std::string CarServer::GetIPAddress() {
 
 void CarServer::SendIPAddress() {
   std::string ipAddr = GetIPAddress();
+  while (ipAddr == "")
+    GetIPAddress();
   SendMessage(ipAddr);
 }
 
