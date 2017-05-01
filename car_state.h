@@ -2,7 +2,7 @@
 #define _CAR_STATE_H_
 #include <string>
 #include <cstring>
-#include <queue>
+#include <vector>
 #include <mutex>
 #include <iostream>
 
@@ -10,22 +10,35 @@ class CarState {
 private:
   int direction=0;
   int speed=0;
-
   int shutdown=0;//car client sets it
 
   std::mutex update_state;
 
 public:
+  std::vector<std::pair<char, char>> cars_states;
+  
+  CarState() {
+    cars_states.resize(9);
+  }
+
   int get_direction() {
     return direction;
   }
 
   void update_continental(char* mesaj) {
+    std::lock_guard<std::mutex> guard(update_state);
+
+    if (mesaj[0] == 0x01) {
+      int idMasina = (int)mesaj[1];
+      cars_states[idMasina] = std::make_pair(mesaj[4], mesaj[5]);
+    }
+
     if (mesaj[0] == 0x02) {
       unsigned char signature[] = {0xAA, 0xBB, 0xCC, 0xDD, 0x00};
       if (strcmp(mesaj + 1, (char*)signature) == 0) {
         this->direction=0;
         this->speed=0;
+        cars_states[8].second = 0x01;
       }
     }
   }

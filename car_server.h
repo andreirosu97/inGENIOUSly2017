@@ -27,7 +27,7 @@ private:
 
     std::string GetIPAddress();
     void SendIPAddress();
-    void SendMessage(std::string message);
+    void SendMessage(char* message);
     void SyncronizeState();
 
   public:
