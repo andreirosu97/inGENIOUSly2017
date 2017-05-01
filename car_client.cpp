@@ -39,9 +39,14 @@ void CarClient::SyncronizeState(){
   while(true){
       char msg[60];
       int recv_size = recv(fd_socket, msg, max_size, 0);
+
       int speed=0;
-      std::string message;
       msg[recv_size] = '\0';
+
+
+      state->update_continental(msg);
+
+      std::string message;
       message=std::string(msg);
 
       std::cout<<"Receptionat: "<<message<<"!\n";

@@ -1,6 +1,7 @@
 #ifndef _CAR_STATE_H_
 #define _CAR_STATE_H_
 #include <string>
+#include <cstring>
 #include <queue>
 #include <mutex>
 #include <iostream>
@@ -17,6 +18,17 @@ private:
 public:
   int get_direction() {
     return direction;
+  }
+
+  void update_continental(char* mesaj) {
+    std::cout << std::hex << mesaj;
+    if (mesaj[0] == 0x02) {
+      unsigned char signature[] = {0xAA, 0xBB, 0xCC, 0xDD};
+      if (strcmp(mesaj + 1, (char*)signature) == 0) {
+        this->direction=0;
+        this->speed=0;
+      }
+    }
   }
 
   void update_motor_direction(std::string direction) {
