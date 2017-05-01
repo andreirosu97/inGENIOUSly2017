@@ -21,9 +21,8 @@ public:
   }
 
   void update_continental(char* mesaj) {
-    std::cout << std::hex << mesaj;
     if (mesaj[0] == 0x02) {
-      unsigned char signature[] = {0xAA, 0xBB, 0xCC, 0xDD};
+      unsigned char signature[] = {0xAA, 0xBB, 0xCC, 0xDD, 0x00};
       if (strcmp(mesaj + 1, (char*)signature) == 0) {
         this->direction=0;
         this->speed=0;
