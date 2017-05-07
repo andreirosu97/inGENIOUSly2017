@@ -1,5 +1,5 @@
 #include "rc522.h"
-
+#include <iostream>
 #include <wiringPiSPI.h>
 int continue_reading = 1 ;
 
