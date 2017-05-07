@@ -26,12 +26,12 @@ char PcdComMF522(unsigned char Command,
                  unsigned char *pInData,
                  unsigned char InLenByte,
                  unsigned char *pOutData,
-                 UINT  *pOutLenBit);
+                 unsigned int  *pOutLenBit);
 void CalulateCRC(unsigned char *pIndata,unsigned char len,unsigned char *pOutData);
 unsigned char ReadRawRC(unsigned char Address);
 void MFRC522_AntennaOn(void);
 
-void delay_ns(UINT16 ns)
+void delay_ns(unsigned int16 ns)
 {
 
   delayMicroseconds(ns / 10);
@@ -46,7 +46,7 @@ void delay_ns(UINT16 ns)
 char MFRC522_Request(unsigned char req_code,unsigned char *pTagType)
 {
 	char status;
-	UINT unLen;
+	unsigned int unLen;
 	unsigned char ucComMF522Buf[MAXRLEN];
 
 	ClearBitMask(Status2Reg,0x08);
@@ -88,7 +88,7 @@ pair<char, string> MFRC522_Anticoll(unsigned char *pSnr)
 {
     char status;
     unsigned char i,snr_check=0;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char ucComMF522Buf[MAXRLEN];
 
 
@@ -137,7 +137,7 @@ char MFRC522_Select(unsigned char *pSnr)
 {
     char status;
     unsigned char i;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char ucComMF522Buf[MAXRLEN];
 
     ucComMF522Buf[0] = PICC_ANTICOLL1;
@@ -186,7 +186,7 @@ char MFRC522_Select(unsigned char *pSnr)
 char MFRC522_AuthState(unsigned char auth_mode,unsigned char addr,unsigned char *pKey,unsigned char *pSnr)
 {
     char status;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char i,ucComMF522Buf[MAXRLEN];
 
     ucComMF522Buf[0] = auth_mode;
@@ -224,7 +224,7 @@ char MFRC522_AuthState(unsigned char auth_mode,unsigned char addr,unsigned char 
 char MFRC522_Read(unsigned char addr, unsigned char *pData)
 {
     char  status;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char i,ucComMF522Buf[MAXRLEN];
 
     ucComMF522Buf[0] = PICC_READ;
@@ -264,7 +264,7 @@ char MFRC522_Read(unsigned char addr, unsigned char *pData)
 char MFRC522_Write(unsigned char addr,unsigned char *pData)
 {
     unsigned char status;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char i,ucComMF522Buf[MAXRLEN];
 
     ucComMF522Buf[0] = PICC_WRITE;
@@ -317,7 +317,7 @@ char MFRC522_Write(unsigned char addr,unsigned char *pData)
 char MFRC522_Halt(void)
 {
     char status;
-    UINT unLen;
+    unsigned int unLen;
     unsigned char ucComMF522Buf[MAXRLEN];
 
     ucComMF522Buf[0] = PICC_HALT;
@@ -449,7 +449,7 @@ char MFRC522_ConfigISOType(unsigned char type)
     * Note:			    None
     ********************************************************************/
 
-void Write_MFRC522 (uchar addr, uchar val) {
+void Write_MFRC522 (unsigned char addr, unsigned char val) {
 	uint8_t cmd = ((addr << 1) & 0x7E);
   wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1)
 }
@@ -539,7 +539,7 @@ void ClearBitMask(unsigned char reg,unsigned char mask)
     *                                    unsigned char *pInData,
     *                                     unsigned char InLenByte,
     *                                      unsigned char *pOutData,
-    *                                       UINT *pOutLenBit)
+    *                                       unsigned int *pOutLenBit)
     *
     * PreCondition:     SPI has been configured
     *
@@ -547,7 +547,7 @@ void ClearBitMask(unsigned char reg,unsigned char mask)
     *               unsigned char *pInData  -  input data
     *               unsigned char InLenByte -  input data length
     *               unsigned char *pOutData -  output Data
-    *               UINT *pOutLenBit -  output data length
+    *               unsigned int *pOutLenBit -  output data length
     *
     * Output:		    char - return MI_OK if success
     *
@@ -562,14 +562,14 @@ char PcdComMF522(unsigned char Command,
                  unsigned char *pInData,
                  unsigned char InLenByte,
                  unsigned char *pOutData,
-                 UINT *pOutLenBit)
+                 unsigned int *pOutLenBit)
 {
     char status = MI_ERR;
     unsigned char irqEn   = 0x00;
     unsigned char waitFor = 0x00;
     unsigned char lastBits;
     unsigned char n;
-    UINT i;
+    unsigned int i;
     switch (Command)
     {
         case PCD_AUTHENT:
