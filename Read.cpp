@@ -7,12 +7,12 @@ int main(){
 
 
 while(continue_reading){
-    unsigned char status = MFRC522_Request(PICC_REQIDL)
+    unsigned char status = MFRC522_Request(PICC_REQIDL);
     std::pair<unsigned char, std::string> me;
 
     if(status == MI_OK){
         print("Card detected");
-        me = MFRC522_Anticoll()
+        me = MFRC522_Anticoll(me.first());
         if (status == MI_OK){
             std::cout<<me.second();
             MFRC522_Read(8);
