@@ -7,7 +7,7 @@
  */
 #include <cstdio>
 #include "rc522.h"
-//#include <wiringPiSPI.h>
+#include <wiringPiSPI.h>
 
 #define HARWARE_SPI
 
@@ -410,7 +410,7 @@ char MFRC522_ConfigISOType(unsigned char type)
 
 void Write_MFRC522 (unsigned char addr, unsigned char val) {
 	uint8_t cmd = ((addr << 1) & 0x7E);
-  wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1)
+  wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
 }
 
 
@@ -419,7 +419,7 @@ unsigned char ReadRawRC(unsigned char addr)
 {
     uint8_t cmd[2];
     cmd[0] = ((addr << 1) & 0x7E) | 0x80;
-    wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1)
+    wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
   	return cmd[0];
 }
 
