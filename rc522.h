@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-#include <string>
-#include <iostream>
-
-=======
->>>>>>> ad725b60048fb6227cc40233efb48dea7e4d4e5f
 #define PCD_IDLE              0x00
 #define PCD_AUTHENT           0x0E
 #define PCD_RECEIVE           0x08
