@@ -17,7 +17,6 @@
 #define SET_RC522RST  IOPut(o4,on);
 #define CLR_RC522RST  IOPut(o4,off);
 
-typedef unsigned char unsigned char;
 
 void ClearBitMask(unsigned char reg,unsigned char mask);
 void WriteRawRC(unsigned char Address, unsigned char value);

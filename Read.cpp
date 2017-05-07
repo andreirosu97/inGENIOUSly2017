@@ -11,7 +11,7 @@ while(continue_reading){
     std::pair<unsigned char, std::string> me;
 
     if(status == MI_OK){
-        print "Card detected"
+        print("Card detected");
         me = MFRC522_Anticoll()
         if (status == MI_OK){
             std::cout<<me.second();
@@ -19,3 +19,4 @@ while(continue_reading){
         }
       }
     }
+  }
