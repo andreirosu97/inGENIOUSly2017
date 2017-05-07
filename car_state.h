@@ -16,9 +16,11 @@ private:
 
 public:
   std::vector<std::pair<char, char>> cars_states;
-  
+
   CarState() {
     cars_states.resize(9);
+    cars_states[8].first = 0xA3;
+    cars_states[8].second = 0xAD;
   }
 
   int get_direction() {
@@ -30,7 +32,7 @@ public:
 
     if (mesaj[0] == 0x01) {
       int idMasina = (int)mesaj[1];
-      cars_states[idMasina] = std::make_pair(mesaj[4], mesaj[5]);
+      cars_states[idMasina] = std::make_pair(mesaj[3], mesaj[4]);
     }
 
     if (mesaj[0] == 0x02) {
