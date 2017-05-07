@@ -10,7 +10,6 @@ while(continue_reading){
     unsigned char status = MFRC522_Request(PICC_REQIDL)
     std::pair<unsigned char, std::string> me;
 
-    # If a card is found
     if(status == MI_OK){
         print "Card detected"
         me = MFRC522_Anticoll()
