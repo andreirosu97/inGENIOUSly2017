@@ -1,5 +1,3 @@
-#include <string>
-
 #define PCD_IDLE              0x00
 #define PCD_AUTHENT           0x0E
 #define PCD_RECEIVE           0x08
@@ -123,7 +121,7 @@
 void MFRC522_AntennaOn(void);
 void MFRC522_AntennaOff(void);
 char MFRC522_ConfigISOType(unsigned char type);
-std::pair<char, std::string> MFRC522_Anticoll(unsigned char *pSnr);
+char MFRC522_Anticoll(unsigned char *pSnr);
 char MFRC522_Select(unsigned char *pSnr);
 char MFRC522_AuthState(unsigned char auth_mode,unsigned char addr,unsigned char *pKey,unsigned char *pSnr);
 char MFRC522_Write(unsigned char addr,unsigned char *pData);

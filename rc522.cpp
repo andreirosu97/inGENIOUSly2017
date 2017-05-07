@@ -76,7 +76,7 @@ char MFRC522_Request(unsigned char req_code,unsigned char *pTagType)
     *
     * Note:			    None
     ********************************************************************/
-std::pair<char, std::string> MFRC522_Anticoll(unsigned char *pSnr)
+char MFRC522_Anticoll(unsigned char *pSnr)
 {
     char status;
     unsigned char i,snr_check=0;
@@ -106,7 +106,7 @@ std::pair<char, std::string> MFRC522_Anticoll(unsigned char *pSnr)
     ucComMF522Buf[unLen] = '\0';
 
     SetBitMask(CollReg,0x80);
-    return std::make_pair(status, std::string((char*)ucComMF522Buf));
+    return status;
 }
 
 /*********************************************************************
