@@ -31,6 +31,7 @@ void CarServer::SyncronizeState(){
     unsigned char telegrama[6];
     state->GetMyState(telegrama);
     SendMessage((char*)telegrama);
-    usleep(500000);
+
+    usleep(100000);
   }
 }
