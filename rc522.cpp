@@ -408,12 +408,6 @@ char MFRC522_ConfigISOType(unsigned char type)
     * Note:			    None
     ********************************************************************/
 
-void Write_MFRC522 (unsigned char addr, unsigned char val) {
-	uint8_t cmd = ((addr << 1) & 0x7E);
-  wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
-}
-
-
 
 unsigned char ReadRawRC(unsigned char addr)
 {
@@ -443,8 +437,9 @@ unsigned char ReadRawRC(unsigned char addr)
 void WriteRawRC(unsigned char addr, unsigned char value)
 {
     uint8_t cmd = ((addr << 1) & 0x7E);
+    unit8_t value = value;
     wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
-    wiringPiSPIDataRW(0, value, 1);
+    wiringPiSPIDataRW(0, (uint8_t *) value, 1);
 }
 
    /*********************************************************************
