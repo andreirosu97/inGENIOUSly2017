@@ -4,21 +4,23 @@
 #include "car_state.h"
 #include <thread>
 
-#define PWM_1 0
-#define PIN_1_1 1
-#define PIN_1_2 2
+//Mottors LEFT
+#define PWM_1 27
+#define PIN_1_1 28
+#define PIN_1_2 29
 
-#define PWM_2 3
-#define PIN_2_1 4
-#define PIN_2_2 5
+#define PWM_2 23
+#define PIN_2_1 24
+#define PIN_2_2 25
 
-#define PWM_3 8
-#define PIN_3_1 9
-#define PIN_3_2 7
+//Motors RIGHT
+#define PWM_3 21
+#define PIN_3_1 22
+#define PIN_3_2 26
 
-#define PWM_4 6
-#define PIN_4_1 10
-#define PIN_4_2 11
+#define PWM_4 3
+#define PIN_4_1 4
+#define PIN_4_2 5
 
 class CarMotor {
 private:

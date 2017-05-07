@@ -11,11 +11,11 @@ private:
   int direction=0;
   int speed=0;
   int shutdown=0;//car client sets it
+  std::vector<std::pair<char, char>> cars_states;
 
   std::mutex update_state;
 
 public:
-  std::vector<std::pair<char, char>> cars_states;
 
   CarState() {
     cars_states.resize(9);
@@ -27,6 +27,15 @@ public:
     return direction;
   }
 
+  void GetMyState(unsigned char* state){
+    std::lock_guard<std::mutex> guard(update_state);
+    state[0] = 0x01;
+    state[1] = 0x08;
+    state[2] = 0xff;
+    state[3] = this->cars_states[8].first;
+    state[4] = this->cars_states[8].second;
+    state[5] = 0x00;
+  }
   void update_continental(char* mesaj) {
     std::lock_guard<std::mutex> guard(update_state);
 
