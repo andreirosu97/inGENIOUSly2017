@@ -1,3 +1,5 @@
+#include <string>
+
 #define PCD_IDLE              0x00
 #define PCD_AUTHENT           0x0E
 #define PCD_RECEIVE           0x08
@@ -118,13 +120,10 @@
 #define  SENDID     0xA5
 #define  RELOAD_COUNT  0xfb    //18.432M  9600  0xfb  4800  0xf6
 
-
-char MFRC522_Reset(void);
-char MFRC522_Request(unsigned char req_code,unsigned char *pTagType);
 void MFRC522_AntennaOn(void);
 void MFRC522_AntennaOff(void);
 char MFRC522_ConfigISOType(unsigned char type);
-char MFRC522_Anticoll(unsigned char *pSnr);
+std::pair<char, std::string> MFRC522_Anticoll(unsigned char *pSnr);
 char MFRC522_Select(unsigned char *pSnr);
 char MFRC522_AuthState(unsigned char auth_mode,unsigned char addr,unsigned char *pKey,unsigned char *pSnr);
 char MFRC522_Write(unsigned char addr,unsigned char *pData);

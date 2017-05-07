@@ -7,16 +7,9 @@
  */
 #include <cstdio>
 #include "rc522.h"
-#include <string>
-#include <wiringPiSPI.h>
+//#include <wiringPiSPI.h>
 
 #define HARWARE_SPI
-
-#define SET_SPI_CS  IOPut(o3,on);
-#define CLR_SPI_CS  IOPut(o3,off);
-#define SET_RC522RST  IOPut(o4,on);
-#define CLR_RC522RST  IOPut(o4,off);
-
 
 void ClearBitMask(unsigned char reg,unsigned char mask);
 void WriteRawRC(unsigned char Address, unsigned char value);
@@ -30,7 +23,7 @@ void CalulateCRC(unsigned char *pIndata,unsigned char len,unsigned char *pOutDat
 unsigned char ReadRawRC(unsigned char Address);
 void MFRC522_AntennaOn(void);
 
-void delay_ns(unsigned int16 ns)
+void delay_ns(unsigned int ns)
 {
 
   delayMicroseconds(ns / 10);
@@ -83,7 +76,7 @@ char MFRC522_Request(unsigned char req_code,unsigned char *pTagType)
     *
     * Note:			    None
     ********************************************************************/
-pair<char, string> MFRC522_Anticoll(unsigned char *pSnr)
+std::pair<char, std::string> MFRC522_Anticoll(unsigned char *pSnr)
 {
     char status;
     unsigned char i,snr_check=0;
@@ -113,7 +106,7 @@ pair<char, string> MFRC522_Anticoll(unsigned char *pSnr)
     ucComMF522Buf[unLen] = '\0';
 
     SetBitMask(CollReg,0x80);
-    return make_pair(status, string(ucComMF522Buf));
+    return std::make_pair(status, std::string((char*)ucComMF522Buf));
 }
 
 /*********************************************************************
@@ -365,39 +358,6 @@ void CalulateCRC(unsigned char *pIndata,unsigned char len,unsigned char *pOutDat
     pOutData[1] = ReadRawRC(CRCResultRegM);
 }
 
-/*********************************************************************
-    * Function:        char MFRC522_Reset(void)
-    *
-    * PreCondition:     none
-    *
-    * Input:		    none
-    *
-    * Output:		    return MI_OK
-    *
-    * Side Effects:	    reset the RC522
-    *
-    * Overview:		    This function reset the RC522
-    *
-    * Note:			    None
-    ********************************************************************/
-char MFRC522_Reset(void)
-{
-  	SET_RC522RST;
-    delay_ns(10);
-	  CLR_RC522RST;
-    delay_ns(10);
-	  SET_RC522RST;
-    delay_ns(10);
-    WriteRawRC(CommandReg,PCD_RESETPHASE);
-    delay_ns(10);
-    WriteRawRC(ModeReg,0x3D);
-    WriteRawRC(TReloadRegL,30);
-    WriteRawRC(TReloadRegH,0);
-    WriteRawRC(TModeReg,0x8D);
-    WriteRawRC(TPrescalerReg,0x3E);
-	  WriteRawRC(TxAutoReg,0x40);
-    return MI_OK;
-}
    /*********************************************************************
     * Function:        char MFRC522_ConfigISOType(unsigned char type)
     *
