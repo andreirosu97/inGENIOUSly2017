@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+#include <string>
+#include <iostream>
+
+=======
+>>>>>>> ad725b60048fb6227cc40233efb48dea7e4d4e5f
 #define PCD_IDLE              0x00
 #define PCD_AUTHENT           0x0E
 #define PCD_RECEIVE           0x08
@@ -123,6 +129,7 @@ void MFRC522_AntennaOff(void);
 char MFRC522_ConfigISOType(unsigned char type);
 char MFRC522_Anticoll(unsigned char *pSnr);
 char MFRC522_Select(unsigned char *pSnr);
+char MFRC522_Request(unsigned char req_code,unsigned char *pTagType);
 char MFRC522_AuthState(unsigned char auth_mode,unsigned char addr,unsigned char *pKey,unsigned char *pSnr);
 char MFRC522_Write(unsigned char addr,unsigned char *pData);
 char MFRC522_Read(unsigned char addr,unsigned char *pData);

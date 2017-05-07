@@ -439,7 +439,7 @@ void WriteRawRC(unsigned char addr, unsigned char value)
     uint8_t cmd = ((addr << 1) & 0x7E);
     unit8_t value = value;
     wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
-    wiringPiSPIDataRW(0, (uint8_t *) value, 1)
+    wiringPiSPIDataRW(0, (uint8_t *) value, 1);
 }
 
    /*********************************************************************
