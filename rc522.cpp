@@ -8,7 +8,7 @@
 #include <cstdio>
 #include "rc522.h"
 #include <string>
-#include <wiringPi.h>
+#include <wiringPiSPI.h>
 
 #define HARWARE_SPI
 
