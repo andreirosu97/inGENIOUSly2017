@@ -7,7 +7,9 @@
  */
 #include <cstdio>
 #include "rc522.h"
+#include <stdint.h>
 #include <wiringPiSPI.h>
+#include <wiringPi.h>
 
 #define HARWARE_SPI
 
@@ -434,12 +436,12 @@ unsigned char ReadRawRC(unsigned char addr)
     *
     * Note:			    None
     ********************************************************************/
-void WriteRawRC(unsigned char addr, unsigned char value)
+void WriteRawRC(unsigned char addr, unsigned char val)
 {
     uint8_t cmd = ((addr << 1) & 0x7E);
-    unit8_t value = value;
+    uint8_t value = val;
     wiringPiSPIDataRW(0, (uint8_t *) &cmd, 1);
-    wiringPiSPIDataRW(0, (uint8_t *) value, 1);
+    wiringPiSPIDataRW(0, (uint8_t *) &value, 1);
 }
 
    /*********************************************************************
