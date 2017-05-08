@@ -8,6 +8,7 @@
 #include <cstdio>
 #include "rc522.h"
 #include <stdint.h>
+#include <iostream>
 #include <wiringPiSPI.h>
 #include <wiringPi.h>
 
@@ -50,14 +51,15 @@ char MFRC522_Request(unsigned char req_code,unsigned char *pTagType)
 	ucComMF522Buf[0] = req_code;
 
 	status = PcdComMF522(PCD_TRANSCEIVE,ucComMF522Buf,1,ucComMF522Buf,&unLen);
-
+  std::cout << (int) status << std::endl;
 	if ((status == MI_OK) && (unLen == 0x10))
 	{
 		*pTagType     = ucComMF522Buf[0];
 		*(pTagType+1) = ucComMF522Buf[1];
 	}
 	else
-	{   status = MI_ERR;   }
+	{ std::cout << "EROARE" << std::endl;
+     status = MI_ERR;   }
 
 	return status;
 }
@@ -528,10 +530,6 @@ char PcdComMF522(unsigned char Command,
     unsigned int i;
     switch (Command)
     {
-        case PCD_AUTHENT:
-			irqEn   = 0x12;
-			waitFor = 0x10;
-			break;
 		case PCD_TRANSCEIVE:
 			irqEn   = 0x77;
 			waitFor = 0x30;
