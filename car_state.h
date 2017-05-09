@@ -49,7 +49,7 @@ public:
   }
 
   void update_state_rf_found() {
-    std::lock_guard<std::mutex> guard(update_state);
+    std::cout<<"Update_state_rf_found"<<std::endl;
     if (cur_state == MOVING_OUT) {
       cur_state = STOPPED;
       stop_time = clock();
@@ -58,23 +58,24 @@ public:
     }
   }
 
-  void update_rf_tag(int uid) {
+  void update_rf_tag(unsigned char uid[]) {
     std::lock_guard<std::mutex> guard(update_state);
-
+    std::cout<<"Update_rf_tag"<<std::endl;
     int found = 0, poz;
 
     for (int iterator = 0; iterator < nr_i_map; ++iterator) {
-      if (i_map[iterator][0] == uid) {
+      if (i_map[iterator][0] == (int)uid[0]) {
         found = 1;
         poz = iterator;
       }
     }
 
-    if (!found) {
-      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    if (!found) {;
+      //std::cout << "Eroare RF TAG, tagul " << (int)uid[0] << " nu a fost gasit" << std::endl;
     } else {
       last_rf_tag = i_map[poz][1];
     }
+
     update_state_rf_found();
 
   }
@@ -133,9 +134,10 @@ public:
 
     if (cur_state == STOPPED) {
       clock_t current_time = clock();
-
-      if ((stop_time - current_time) / CLOCKS_PER_SEC >= 3.0) {
+      std::cout<<"Suntem opriti si asteptam ! "<<(current_time - stop_time) / CLOCKS_PER_SEC<<std::endl;
+      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cur_state = MOVING_IN;
+        std::cout<<"MOVING IN"<<std::endl;
         motor_state = std::make_pair(this->direction,this->speed);
       } else {
         //=====================MIGHT BE A bug====================//

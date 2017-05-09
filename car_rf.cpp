@@ -28,8 +28,7 @@ void CarRF::SyncronizeState() {
           for(int i=0;i<4; i++)
             std::cout<<(int)buffer_uid.inputData[i]<<" ";
           std::cout<<std::endl;
-          j++;
-          //state->update_rf_tag(buffer_uid.outputData);
+          state->update_rf_tag(buffer_uid.inputData);
       }
     }
 }
