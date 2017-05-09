@@ -8,9 +8,9 @@
 class CarRF {
   private:
 
-    union {
+    struct {
       unsigned char inputData[20];
-      int outputData;
+      int outputData[10];
     } buffer_tag, buffer_uid;
 
     CarState* state;

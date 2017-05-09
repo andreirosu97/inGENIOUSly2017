@@ -22,9 +22,16 @@ void CarRF::SyncronizeState() {
       unsigned char status = PcdRequest(PICC_REQIDL, bufferTag.inputData);
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid.inputData);
+<<<<<<< HEAD
           state->update_rf_tag(buffer_uid.outputData);
           // E POSIBIL SA NU MEARGA DIN CAUZA ARHITECTURII LITLLE ENDIAN
           // DACA NU MERGE TREBUIE DAT UN REVERSE LA buffer_uid.inputData
+=======
+          std::cout<<j<<":";
+          for(int i=0;i<4; i++)
+            buffer_uid.outputData=atoi(buffer_uid.inputData);
+          state->update_rf_tag(buffer_uid.inputData);
+>>>>>>> 006131c3598b7d7333787a8a52d0ee3d7f7785ca
       }
     }
 }
