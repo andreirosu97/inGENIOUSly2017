@@ -53,7 +53,7 @@ public:
 
   void update_state_rf_found(unsigned int tag_id) {
     std::cout << tag_id << " " << last_rf_tag << "\n";
-    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0xff) && last_rf_tag!=0x01)
+    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01)
       shutdown=1;
     else if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
