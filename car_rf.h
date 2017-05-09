@@ -7,7 +7,12 @@
 
 class CarRF {
   private:
-    char bufferTag[20], bufferUID[20];
+
+    union {
+      char inputData[20];
+      int outputData;
+    } buffer_tag, buffer_uid;
+
     CarState* state;
     std::thread* rf_thread;
     void SyncronizeState();

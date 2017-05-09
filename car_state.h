@@ -22,8 +22,18 @@ public:
   enum STATE {
     STOPPED = 1,
     MOVING_IN = 2,
-    MOVING_OUT =  3
-  }
+    MOVING_OUT = 3
+  };
+
+  unsigned int i_map[6][2] = {
+    {0xa0b8557e, 0x11},
+    {0xc0fc187c, 0x12},
+    {0xc0d9857c, 0x13},
+    {0x9dcf92ab, 0x14},
+    {0x804bfb79, 0x21},
+    {0x70d08a7c, 0x23}
+  };
+  const int nr_i_map = 6;
 
   STATE cur_state = MOVING_IN; // IN cur_state avem stateul masinii
   char last_rf_tag = 0x00;
@@ -38,7 +48,7 @@ public:
     return direction;
   }
 
-  void rf_found() {
+  void update_state_rf_found() {
     std::lock_guard<std::mutex> guard(update_state);
     if (cur_state == MOVING_OUT) {
       cur_state = STOPPED;
@@ -48,11 +58,25 @@ public:
     }
   }
 
-  void update_rf_tg(char* uid) {
+  void update_rf_tag(int uid) {
     std::lock_guard<std::mutex> guard(update_state);
 
-    //aici facem maparea dintre codul UID si numarul tagului
-    //numarul tagului se pune in last_rf_tag
+    int found = 0, poz;
+
+    for (int iterator = 0; iterator < nr_i_map; ++iterator) {
+      if (i_map[iterator][0] == uid) {
+        found = 1;
+        poz = iterator;
+      }
+    }
+
+    if (!found) {
+      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    } else {
+      last_rf_tag = i_map[poz][1];
+    }
+    update_state_rf_found();
+
   }
 
   void get_my_state(unsigned char* state){
@@ -64,7 +88,7 @@ public:
     state[4] = cur_state;
     state[5] = 0x00;
   }
-  
+
   void update_continental(char* mesaj) {
     std::lock_guard<std::mutex> guard(update_state);
 

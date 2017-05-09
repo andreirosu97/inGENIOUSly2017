@@ -19,11 +19,10 @@ void CarRF::Start() {
 
 void CarRF::SyncronizeState() {
   while(true){
-      unsigned char status = PcdRequest(PICC_REQIDL, bufferTag);
+      unsigned char status = PcdRequest(PICC_REQIDL, bufferTag.inputData);
       if(status == TAG_OK){
-          state->rf_found();
-          PcdAnticoll(0, bufferUID);
-          state->update_rf_tg(bufferUID);
+          PcdAnticoll(0, buffer_uid.inputData);
+          state->update_rf_tag(buffer_uid.outputData);
       }
     }
 }
