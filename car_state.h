@@ -33,15 +33,16 @@ public:
     {0x804bfb79, 0x21},
     {0x70d08a7c, 0x23}
   };
+  
   const int nr_i_map = 6;
 
   STATE cur_state = MOVING_OUT; // IN cur_state avem stateul masinii
-  char last_rf_tag = 0x00;
+  char last_rf_tag = 0x01;
 
   CarState() {
     cars_states.resize(9);
-    cars_states[8].first = 0xA3;
-    cars_states[8].second = 0xAD;
+    cars_states[8].first = 0x01;
+    cars_states[8].second = 0x02;
   }
 
   int get_direction() {
@@ -49,32 +50,33 @@ public:
   }
 
   void update_state_rf_found() {
-    std::lock_guard<std::mutex> guard(update_state);
+    std::cout<<"Update_state_rf_found"<<std::endl;
     if (cur_state == MOVING_OUT) {
       cur_state = STOPPED;
       stop_time = clock();
-    } else if (cur_state == MOVING_OUT) {
-      cur_state = MOVING_IN;
+    } else if (cur_state == MOVING_IN) {
+      cur_state = MOVING_OUT;
     }
   }
 
-  void update_rf_tag(int uid) {
+  void update_rf_tag(unsigned char uid[]) {
     std::lock_guard<std::mutex> guard(update_state);
-
+    std::cout<<"Update_rf_tag"<<std::endl;
     int found = 0, poz;
 
     for (int iterator = 0; iterator < nr_i_map; ++iterator) {
-      if (i_map[iterator][0] == uid) {
+      if (i_map[iterator][0] == (int)uid[0]) {
         found = 1;
         poz = iterator;
       }
     }
 
-    if (!found) {
-      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    if (!found) {;
+      //std::cout << "Eroare RF TAG, tagul " << (int)uid[0] << " nu a fost gasit" << std::endl;
     } else {
       last_rf_tag = (char)i_map[poz][1];
     }
+
     update_state_rf_found();
 
   }
@@ -133,11 +135,13 @@ public:
 
     if (cur_state == STOPPED) {
       clock_t current_time = clock();
-
-      if ((stop_time - current_time) / CLOCKS_PER_SEC >= 3.0) {
+      std::cout<<"Suntem opriti si asteptam ! "<<(current_time - stop_time) / CLOCKS_PER_SEC<<std::endl;
+      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cur_state = MOVING_IN;
+        std::cout<<"MOVING IN"<<std::endl;
         motor_state = std::make_pair(this->direction,this->speed);
       } else {
+        //=====================MIGHT BE A bug====================//
         motor_state = std::make_pair(0, 0);
       }
     }

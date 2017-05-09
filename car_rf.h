@@ -9,7 +9,7 @@ class CarRF {
   private:
 
     union {
-      char inputData[20];
+      unsigned char inputData[20];
       int outputData;
     } buffer_tag, buffer_uid;
 
@@ -19,7 +19,7 @@ class CarRF {
 
   public:
     CarRF(CarState* state);
-    ~CarRF();
+    ~CarRF(){};
     void Start();
 
   private:

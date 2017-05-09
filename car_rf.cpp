@@ -18,11 +18,17 @@ void CarRF::Start() {
 }
 
 void CarRF::SyncronizeState() {
+  int j=0;
   while(true){
-      unsigned char status = PcdRequest(PICC_REQIDL, bufferTag.inputData);
+
+      unsigned char status = PcdRequest(PICC_REQIDL, buffer_tag.inputData);
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid.inputData);
-          state->update_rf_tag(buffer_uid.outputData);
+          std::cout<<j<<":";
+          for(int i=0;i<4; i++)
+            std::cout<<(int)buffer_uid.inputData[i]<<" ";
+          std::cout<<std::endl;
+          state->update_rf_tag(buffer_uid.inputData);
       }
     }
 }
