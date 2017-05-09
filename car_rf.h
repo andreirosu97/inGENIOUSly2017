@@ -7,11 +7,7 @@
 
 class CarRF {
   private:
-
-    struct {
-      unsigned char inputData[20];
-      int outputData[10];
-    } buffer_tag, buffer_uid;
+    unsigned char buffer_tag[20], buffer_uid[20];
 
     CarState* state;
     std::thread* rf_thread;
@@ -19,7 +15,7 @@ class CarRF {
 
   public:
     CarRF(CarState* state);
-    ~CarRF(){};
+    ~CarRF();
     void Start();
 
   private:

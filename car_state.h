@@ -25,19 +25,21 @@ public:
     MOVING_OUT = 3
   };
 
-  unsigned int i_map[6][2] = {
+  unsigned int i_map[8][2] = {
     {0xa0b8557e, 0x11},
     {0xc0fc187c, 0x12},
     {0xc0d9857c, 0x13},
     {0x9dcf92ab, 0x14},
     {0x804bfb79, 0x21},
-    {0x70d08a7c, 0x23}
+    {0x70d08a7c, 0x23},
+    {0x859e8dab, 0xff},
+    {0x8570a8a5, 0xfe}
   };
-  
-  const int nr_i_map = 6;
+
+  const int nr_i_map = 8;
 
   STATE cur_state = MOVING_OUT; // IN cur_state avem stateul masinii
-  char last_rf_tag = 0x01;
+  unsigned int last_rf_tag = 0x01;
 
   CarState() {
     cars_states.resize(9);
@@ -49,36 +51,33 @@ public:
     return direction;
   }
 
-  void update_state_rf_found() {
-    std::cout<<"Update_state_rf_found"<<std::endl;
-    if (cur_state == MOVING_OUT) {
+  void update_state_rf_found(unsigned int tag_id) {
+    std::cout << tag_id << " " << last_rf_tag << "\n";
+    if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
       stop_time = clock();
-    } else if (cur_state == MOVING_IN) {
+    } else if (cur_state == MOVING_IN && tag_id != last_rf_tag) {
       cur_state = MOVING_OUT;
     }
   }
 
-  void update_rf_tag(unsigned char uid[]) {
+  void update_rf_tag(unsigned int uid) {
     std::lock_guard<std::mutex> guard(update_state);
-    std::cout<<"Update_rf_tag"<<std::endl;
     int found = 0, poz;
 
     for (int iterator = 0; iterator < nr_i_map; ++iterator) {
-      if (i_map[iterator][0] == (int)uid[0]) {
+      if (i_map[iterator][0] == uid) {
         found = 1;
         poz = iterator;
       }
     }
 
     if (!found) {;
-      //std::cout << "Eroare RF TAG, tagul " << (int)uid[0] << " nu a fost gasit" << std::endl;
+      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
     } else {
-      last_rf_tag = (char)i_map[poz][1];
+      update_state_rf_found(i_map[poz][1]);
+      last_rf_tag = i_map[poz][1];
     }
-
-    update_state_rf_found();
-
   }
 
   void get_my_state(unsigned char* state){
@@ -86,7 +85,7 @@ public:
     state[0] = 0x01;
     state[1] = 0x08;
     state[2] = 0xff;
-    state[3] = last_rf_tag;
+    state[3] = (char)last_rf_tag;
     state[4] = cur_state;
     state[5] = 0x00;
   }
@@ -135,7 +134,6 @@ public:
 
     if (cur_state == STOPPED) {
       clock_t current_time = clock();
-      std::cout<<"Suntem opriti si asteptam ! "<<(current_time - stop_time) / CLOCKS_PER_SEC<<std::endl;
       if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cur_state = MOVING_IN;
         std::cout<<"MOVING IN"<<std::endl;
@@ -153,9 +151,9 @@ public:
   }
 
   void get_state(){
-    std::cout<<"Speed:"<<this->speed<<'\n';
-    std::cout<<"Direction:"<<this->direction<<'\n';
-    std::cout<<"Shut down:"<<this->shutdown<<'\n';
+    std::cout<<"Speed:"<<this->speed<<std::endl;
+    std::cout<<"Direction:"<<this->direction<<std::endl;
+    std::cout<<"Shut down:"<<this->shutdown<<std::endl;
   }
 
   void shut_down() {

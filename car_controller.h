@@ -11,8 +11,8 @@ class CarController {
   private:
     std::unique_ptr<CarConnection> connection;
     std::unique_ptr<CarState> state;
-    std::unique_ptr<CarMotor> motor;
     std::unique_ptr<CarRF> rf;
+    std::unique_ptr<CarMotor> motor;
   public:
     CarController();
     ~CarController() {std::cout<<"CAR IS SHUTTING DOWN!\n";};

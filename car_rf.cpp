@@ -10,6 +10,10 @@ CarRF::CarRF(CarState *state) {
   this->state = state;
 }
 
+CarRF::~CarRF() {
+  delete rf_thread;
+}
+
 void CarRF::Start() {
   wiringPiSPISetup(0, 10000000);
   InitRc522();
@@ -19,19 +23,12 @@ void CarRF::Start() {
 
 void CarRF::SyncronizeState() {
   while(true){
-      unsigned char status = PcdRequest(PICC_REQIDL, bufferTag.inputData);
+      unsigned char status = PcdRequest(PICC_REQIDL, buffer_tag);
       if(status == TAG_OK){
-          PcdAnticoll(0, buffer_uid.inputData);
-<<<<<<< HEAD
-          state->update_rf_tag(buffer_uid.outputData);
-          // E POSIBIL SA NU MEARGA DIN CAUZA ARHITECTURII LITLLE ENDIAN
-          // DACA NU MERGE TREBUIE DAT UN REVERSE LA buffer_uid.inputData
-=======
-          std::cout<<j<<":";
-          for(int i=0;i<4; i++)
-            buffer_uid.outputData=atoi(buffer_uid.inputData);
-          state->update_rf_tag(buffer_uid.inputData);
->>>>>>> 006131c3598b7d7333787a8a52d0ee3d7f7785ca
+          PcdAnticoll(0, buffer_uid);
+          unsigned int uid = (buffer_uid[0]<<24)|(buffer_uid[1]<<16)|(buffer_uid[2]<<8)|buffer_uid[3];
+          std::cout << std::hex << "UIDul este " << uid << "\n";
+          state->update_rf_tag(uid);
       }
     }
 }
