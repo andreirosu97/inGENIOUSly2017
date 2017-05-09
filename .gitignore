@@ -1,2 +1,3 @@
 /programel
 *.o
+/update_to_raspberry.sh
