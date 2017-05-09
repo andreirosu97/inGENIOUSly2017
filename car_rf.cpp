@@ -18,17 +18,13 @@ void CarRF::Start() {
 }
 
 void CarRF::SyncronizeState() {
-  int j=0;
   while(true){
-
-      unsigned char status = PcdRequest(PICC_REQIDL, buffer_tag.inputData);
+      unsigned char status = PcdRequest(PICC_REQIDL, bufferTag.inputData);
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid.inputData);
-          std::cout<<j<<":";
-          for(int i=0;i<4; i++)
-            std::cout<<(int)buffer_uid.inputData[i]<<" ";
-          std::cout<<std::endl;
-          state->update_rf_tag(buffer_uid.inputData);
+          state->update_rf_tag(buffer_uid.outputData);
+          // E POSIBIL SA NU MEARGA DIN CAUZA ARHITECTURII LITLLE ENDIAN
+          // DACA NU MERGE TREBUIE DAT UN REVERSE LA buffer_uid.inputData
       }
     }
 }
