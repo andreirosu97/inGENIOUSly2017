@@ -33,9 +33,10 @@ public:
     {0x804bfb79, 0x21},
     {0x70d08a7c, 0x23}
   };
+  
   const int nr_i_map = 6;
 
-  STATE cur_state = MOVING_IN; // IN cur_state avem stateul masinii
+  STATE cur_state = MOVING_OUT; // IN cur_state avem stateul masinii
   char last_rf_tag = 0x01;
 
   CarState() {
@@ -73,7 +74,7 @@ public:
     if (!found) {;
       //std::cout << "Eroare RF TAG, tagul " << (int)uid[0] << " nu a fost gasit" << std::endl;
     } else {
-      last_rf_tag = i_map[poz][1];
+      last_rf_tag = (char)i_map[poz][1];
     }
 
     update_state_rf_found();
