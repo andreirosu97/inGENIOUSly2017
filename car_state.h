@@ -9,8 +9,8 @@
 
 class CarState {
 private:
-  int direction=0;
-  int speed=0;
+  int direction=1;
+  int speed=40;
   int shutdown=0;//car client sets it
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
@@ -53,7 +53,9 @@ public:
 
   void update_state_rf_found(unsigned int tag_id) {
     std::cout << tag_id << " " << last_rf_tag << "\n";
-    if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
+    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0xff) && last_rf_tag!=0x01)
+      shutdown=1;
+    else if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
       stop_time = clock();
     } else if (cur_state == MOVING_IN && tag_id != last_rf_tag) {
