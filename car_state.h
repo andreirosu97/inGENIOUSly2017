@@ -36,12 +36,12 @@ public:
   const int nr_i_map = 6;
 
   STATE cur_state = MOVING_IN; // IN cur_state avem stateul masinii
-  char last_rf_tag = 0x00;
+  char last_rf_tag = 0x01;
 
   CarState() {
     cars_states.resize(9);
-    cars_states[8].first = 0xA3;
-    cars_states[8].second = 0xAD;
+    cars_states[8].first = 0x01;
+    cars_states[8].second = 0x02;
   }
 
   int get_direction() {
@@ -53,8 +53,8 @@ public:
     if (cur_state == MOVING_OUT) {
       cur_state = STOPPED;
       stop_time = clock();
-    } else if (cur_state == MOVING_OUT) {
-      cur_state = MOVING_IN;
+    } else if (cur_state == MOVING_IN) {
+      cur_state = MOVING_OUT;
     }
   }
 
@@ -138,6 +138,7 @@ public:
         cur_state = MOVING_IN;
         motor_state = std::make_pair(this->direction,this->speed);
       } else {
+        //=====================MIGHT BE A bug====================//
         motor_state = std::make_pair(0, 0);
       }
     }
