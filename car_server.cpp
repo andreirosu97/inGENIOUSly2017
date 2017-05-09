@@ -29,7 +29,7 @@ void CarServer::SyncronizeState(){
   struct sockaddr_in s;
   while(true){
     unsigned char telegrama[6];
-    state->GetMyState(telegrama);
+    state->get_my_state(telegrama);
     SendMessage((char*)telegrama);
 
     usleep(100000);

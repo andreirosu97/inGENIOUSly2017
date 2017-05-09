@@ -1,5 +1,6 @@
 #ifndef _CAR_STATE_H_
 #define _CAR_STATE_H_
+#include <ctime>
 #include <string>
 #include <cstring>
 #include <vector>
@@ -11,11 +12,21 @@ private:
   int direction=0;
   int speed=0;
   int shutdown=0;//car client sets it
+  clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
 
   std::mutex update_state;
 
 public:
+
+  enum STATE {
+    STOPPED = 1,
+    MOVING_IN = 2,
+    MOVING_OUT =  3
+  }
+
+  STATE cur_state = MOVING_IN; // IN cur_state avem stateul masinii
+  char last_rf_tag = 0x00;
 
   CarState() {
     cars_states.resize(9);
@@ -27,15 +38,33 @@ public:
     return direction;
   }
 
-  void GetMyState(unsigned char* state){
+  void rf_found() {
+    std::lock_guard<std::mutex> guard(update_state);
+    if (cur_state == MOVING_OUT) {
+      cur_state = STOPPED;
+      stop_time = clock();
+    } else if (cur_state == MOVING_OUT) {
+      cur_state = MOVING_IN;
+    }
+  }
+
+  void update_rf_tg(char* uid) {
+    std::lock_guard<std::mutex> guard(update_state);
+
+    //aici facem maparea dintre codul UID si numarul tagului
+    //numarul tagului se pune in last_rf_tag
+  }
+
+  void get_my_state(unsigned char* state){
     std::lock_guard<std::mutex> guard(update_state);
     state[0] = 0x01;
     state[1] = 0x08;
     state[2] = 0xff;
-    state[3] = this->cars_states[8].first;
-    state[4] = this->cars_states[8].second;
+    state[3] = last_rf_tag;
+    state[4] = cur_state;
     state[5] = 0x00;
   }
+  
   void update_continental(char* mesaj) {
     std::lock_guard<std::mutex> guard(update_state);
 
@@ -76,8 +105,22 @@ public:
   std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
 
-    std::pair<int,int> motor_state;
-    motor_state= std::make_pair(this->direction,this->speed);
+    std::pair<int, int> motor_state;
+
+    if (cur_state == STOPPED) {
+      clock_t current_time = clock();
+
+      if ((stop_time - current_time) / CLOCKS_PER_SEC >= 3.0) {
+        cur_state = MOVING_IN;
+        motor_state = std::make_pair(this->direction,this->speed);
+      } else {
+        motor_state = std::make_pair(0, 0);
+      }
+    }
+    else {
+      motor_state= std::make_pair(this->direction,this->speed);
+    }
+
     return motor_state;
   }
 

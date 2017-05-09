@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "bcm2835.h"
 #include "rc522.h"
 #include <wiringPiSPI.h>
 #include <iostream>
@@ -11,11 +10,8 @@ uint8_t debug = 0;
 
 void InitRc522(void)
 {
-	std::cout<<"MERGE1"<<std::endl;
 	PcdReset();
-	std::cout<<"MERGE2"<<std::endl;
 	PcdAntennaOn();
-	std::cout<<"MERGE3"<<std::endl;
 }
 
 char PcdRequest(uint8_t req_code,uint8_t *pTagType)
@@ -231,15 +227,11 @@ void CalulateCRC(uint8_t *pIn ,uint8_t   len,uint8_t *pOut )
 
 char PcdReset(void)
 {
-	std::cout <<"R1" << std::endl;
 	WriteRawRC(CommandReg,PCD_RESETPHASE);
-	std::cout <<"R1" << std::endl;
 	usleep(10000);
 	ClearBitMask(TxControlReg,0x03);
-	std::cout <<"R1" << std::endl;
 	usleep(10000);
 	SetBitMask(TxControlReg,0x03);
-	std::cout <<"R1" << std::endl;
 	WriteRawRC(TModeReg,0x8D);
 	WriteRawRC(TPrescalerReg,0x3E);
 	WriteRawRC(TReloadRegL,30);
