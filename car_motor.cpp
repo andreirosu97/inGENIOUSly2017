@@ -9,6 +9,7 @@ void CarMotor::Start() {
     std::cout << "Nu a mers wiringPiSetupul";
     state->shut_down();
   }
+
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
   pinMode(PIN_1_2, OUTPUT);
