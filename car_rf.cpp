@@ -26,8 +26,7 @@ void CarRF::SyncronizeState() {
           PcdAnticoll(0, buffer_uid.inputData);
           std::cout<<j<<":";
           for(int i=0;i<4; i++)
-            std::cout<<(int)buffer_uid.inputData[i]<<" ";
-          std::cout<<std::endl;
+            buffer_uid.outputData=atoi(buffer_uid.inputData);
           state->update_rf_tag(buffer_uid.inputData);
       }
     }
