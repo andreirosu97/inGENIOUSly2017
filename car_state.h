@@ -9,8 +9,8 @@
 
 class CarState {
 private:
-  int direction=0;
-  int speed=0;
+  int direction=1;
+  int speed=40;
   int shutdown=0;//car client sets it
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
