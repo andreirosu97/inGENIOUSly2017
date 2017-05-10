@@ -25,7 +25,7 @@ public:
     MOVING_OUT = 3
   };
 
-  unsigned int i_map[8][2] = {
+  unsigned int i_map[9][2] = {
     {0xa0b8557e, 0x11},
     {0xc0fc187c, 0x12},
     {0xc0d9857c, 0x13},
@@ -33,10 +33,11 @@ public:
     {0x804bfb79, 0x21},
     {0x70d08a7c, 0x23},
     {0x859e8dab, 0xff},
-    {0x8570a8a5, 0xfe}
+    {0x8570a8a5, 0xfe},
+    {0x9cf0bf88, 0xfd}
   };
 
-  const int nr_i_map = 8;
+  const int nr_i_map = 9;
 
   STATE cur_state = MOVING_OUT; // IN cur_state avem stateul masinii
   unsigned int last_rf_tag = 0x01;
@@ -53,7 +54,7 @@ public:
 
   void update_state_rf_found(unsigned int tag_id) {
     std::cout << tag_id << " " << last_rf_tag << "\n";
-    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01)
+    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01  && last_rf_tag!=tag_id)
       shutdown=1;
     else if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
@@ -141,7 +142,6 @@ public:
         std::cout<<"MOVING IN"<<std::endl;
         motor_state = std::make_pair(this->direction,this->speed);
       } else {
-        //=====================MIGHT BE A bug====================//
         motor_state = std::make_pair(0, 0);
       }
     }
