@@ -14,9 +14,9 @@
 #define PIN_2_2 25
 
 //Motors RIGHT
-#define PWM_3 21
-#define PIN_3_1 22
-#define PIN_3_2 26
+#define PWM_3 26
+#define PIN_3_1 21
+#define PIN_3_2 22
 
 #define PWM_4 3
 #define PIN_4_1 4
