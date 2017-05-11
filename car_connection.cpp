@@ -44,8 +44,6 @@ void CarConnection::Start(){
 
   client->Start();
   server->Start();
-
-  // GOD IS THE ONLY OWNER OF THESE OBJECTS
 }
 
 CarConnection::~CarConnection(){

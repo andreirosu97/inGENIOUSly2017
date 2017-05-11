@@ -19,7 +19,6 @@ CarClient::~CarClient() {
 
 void CarClient::Start(){
   client_thread = new std::thread(&CarClient::SyncronizeState, this);
-  client_thread->detach();
 }
 
 void CarClient::SyncronizeState(){
