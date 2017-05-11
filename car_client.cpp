@@ -14,11 +14,13 @@ CarClient::CarClient(CarState* state, int fd_socket):
   fd_socket(fd_socket){}
 
 CarClient::~CarClient() {
-  delete client_thread;
+  thread_on=0;
+  std::cout<<"CLOSING CLIENT!"<<std::endl;
 }
 
 void CarClient::Start(){
   client_thread = new std::thread(&CarClient::SyncronizeState, this);
+  client_thread->detach();
 }
 
 void CarClient::SyncronizeState(){
@@ -35,7 +37,7 @@ void CarClient::SyncronizeState(){
   /*Reading loop*/
   int retval;
 
-  while(true){
+  while(thread_on){
       char msg[60];
       int recv_size = recv(fd_socket, msg, max_size, 0);
 

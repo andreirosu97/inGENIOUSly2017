@@ -12,7 +12,8 @@ class CarClient {
     int fd_socket;
     CarState* state;
     std::thread* client_thread; // OWNER
-
+    int thread_on=1;
+    
     void SyncronizeState();
 
   public:

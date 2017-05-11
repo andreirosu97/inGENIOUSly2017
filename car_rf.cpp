@@ -11,17 +11,19 @@ CarRF::CarRF(CarState *state) {
 }
 
 CarRF::~CarRF() {
-  delete rf_thread;
+  thread_on=0;
+  std::cout<<"CLOSING RF!"<<std::endl;
 }
 
 void CarRF::Start() {
   wiringPiSPISetup(0, 10000000);
   InitRc522();
   rf_thread = new std::thread(&CarRF::SyncronizeState, this);
+  rf_thread->detach();
 }
 
 void CarRF::SyncronizeState() {
-  while(true){
+  while(thread_on){
       unsigned char status = PcdRequest(PICC_REQIDL, buffer_tag);
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid);

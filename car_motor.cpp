@@ -33,6 +33,7 @@ void CarMotor::Start() {
   softPwmCreate(PWM_4, 0, 100);
 
   motor_thread = new std::thread(&CarMotor::SyncronizeState, this);
+  motor_thread->detach();
 }
 
 CarMotor::CarMotor(CarState* state) {
@@ -84,7 +85,7 @@ void CarMotor::SetDirection(int direction) {
 }
 
 void CarMotor::SyncronizeState() {
-  while(true) {
+  while(thread_on) {
     std::pair<int, int> motorState = state->get_motor_state();
     SetDirection(motorState.first);
     SetSpeed(motorState.second);
@@ -93,11 +94,11 @@ void CarMotor::SyncronizeState() {
 }
 
 CarMotor::~CarMotor() {
-  delete motor_thread;
-  digitalWrite(PWM_1, LOW);
-  digitalWrite(PWM_2, LOW);
-  digitalWrite(PWM_3, LOW);
-  digitalWrite(PWM_4, LOW);
+  thread_on=0;
+  softPwmWrite(PWM_1, 0);
+  softPwmWrite(PWM_2, 0);
+  softPwmWrite(PWM_3, 0);
+  softPwmWrite(PWM_4, 0);
   digitalWrite(PIN_1_1, LOW);
   digitalWrite(PIN_2_1, LOW);
   digitalWrite(PIN_3_2, LOW);
@@ -106,4 +107,5 @@ CarMotor::~CarMotor() {
   digitalWrite(PIN_2_2, LOW);
   digitalWrite(PIN_3_1, LOW);
   digitalWrite(PIN_4_1, LOW);
+  std::cout<<"CLOSING MOTORS!"<<std::endl;
 }

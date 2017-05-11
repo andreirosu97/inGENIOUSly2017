@@ -8,7 +8,8 @@ CarServer::CarServer(CarState* state, int fd_socket):
   fd_socket(fd_socket) {}
 
 CarServer::~CarServer(){
-  delete server_thread;
+  thread_on=0;
+  std::cout<<"CLOSING SERVER!"<<std::endl;
 }
 
 void CarServer::Start(){
@@ -17,6 +18,7 @@ void CarServer::Start(){
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
   server_thread = new std::thread(&CarServer::SyncronizeState, this);
+  server_thread->detach();
 }
 
 void CarServer::SendMessage(char* message) {
@@ -26,7 +28,7 @@ void CarServer::SendMessage(char* message) {
 
 void CarServer::SyncronizeState(){
   struct sockaddr_in s;
-  while(true){
+  while(thread_on){
     unsigned char telegrama[6];
     state->get_my_state(telegrama);
     SendMessage((char*)telegrama);

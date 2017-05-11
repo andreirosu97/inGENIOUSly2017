@@ -24,9 +24,9 @@ private:
     CarState* state;
     std::thread* server_thread;
     struct sockaddr_in s;
+    int thread_on=1;
 
-    std::string GetIPAddress();
-    void SendIPAddress();
+
     void SendMessage(char* message);
     void SyncronizeState();
 

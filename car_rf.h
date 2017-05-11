@@ -11,6 +11,7 @@ class CarRF {
 
     CarState* state;
     std::thread* rf_thread;
+    int thread_on=1;
     void SyncronizeState();
 
   public:

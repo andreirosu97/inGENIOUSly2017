@@ -49,6 +49,8 @@ public:
     cars_states[8].second = 0x02;
   }
 
+  ~CarState(){std::cout<<"CLOSING STATE!"<<std::endl;}
+
   int get_direction() {
     return direction;
   }
@@ -134,7 +136,6 @@ public:
 
   void update_motor_speed(int speed){
     this->speed=speed;
-    get_state();
   }
 
   std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
