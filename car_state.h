@@ -1,6 +1,7 @@
 #ifndef _CAR_STATE_H_
 #define _CAR_STATE_H_
 #include <ctime>
+#include <unistd.h>
 #include <string>
 #include <cstring>
 #include <vector>
@@ -10,7 +11,7 @@
 class CarState {
 private:
   int direction=1;
-  int speed=40;
+  int speed=20;
   int shutdown=0;//car client sets it
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
@@ -54,8 +55,11 @@ public:
 
   void update_state_rf_found(unsigned int tag_id) {
     std::cout << tag_id << " " << last_rf_tag << "\n";
-    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01  && last_rf_tag!=tag_id)
+    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01  && last_rf_tag!=tag_id){
+      sleep(2);
       shutdown=1;
+    }
+
     else if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
       stop_time = clock();
