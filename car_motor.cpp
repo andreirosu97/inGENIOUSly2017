@@ -32,10 +32,6 @@ void CarMotor::Start() {
   softPwmCreate(PWM_3, 0, 100);
   softPwmCreate(PWM_4, 0, 100);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 9bced23e5ff0c30d45fc77c4c10dcec074c3bf0b
   motor_thread = new std::thread(&CarMotor::SyncronizeState, this);
 }
 
@@ -55,23 +51,23 @@ void CarMotor::SetDirection(int direction) {
 
     digitalWrite(PIN_1_1, HIGH);
     digitalWrite(PIN_2_1, HIGH);
-    digitalWrite(PIN_3_2, HIGH);
-    digitalWrite(PIN_4_2, HIGH);
+    digitalWrite(PIN_3_1, HIGH);
+    digitalWrite(PIN_4_1, HIGH);
     digitalWrite(PIN_1_2, LOW);
     digitalWrite(PIN_2_2, LOW);
-    digitalWrite(PIN_3_1, LOW);
-    digitalWrite(PIN_4_1, LOW);
+    digitalWrite(PIN_3_2, LOW);
+    digitalWrite(PIN_4_2, LOW);
 
   } else if(direction == -1){
 
     digitalWrite(PIN_1_1, LOW);
     digitalWrite(PIN_2_1, LOW);
-    digitalWrite(PIN_3_2, LOW);
-    digitalWrite(PIN_4_2, LOW);
+    digitalWrite(PIN_3_1, LOW);
+    digitalWrite(PIN_4_1, LOW);
     digitalWrite(PIN_1_2, HIGH);
     digitalWrite(PIN_2_2, HIGH);
-    digitalWrite(PIN_3_1, HIGH);
-    digitalWrite(PIN_4_1, HIGH);
+    digitalWrite(PIN_3_2, HIGH);
+    digitalWrite(PIN_4_2, HIGH);
 
   }else if(direction == 0){
 
@@ -110,9 +106,4 @@ CarMotor::~CarMotor() {
   digitalWrite(PIN_2_2, LOW);
   digitalWrite(PIN_3_1, LOW);
   digitalWrite(PIN_4_1, LOW);
-<<<<<<< HEAD
-  delay(500);
-  delete motor_thread;
-=======
->>>>>>> 9bced23e5ff0c30d45fc77c4c10dcec074c3bf0b
 }
