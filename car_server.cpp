@@ -13,7 +13,7 @@ CarServer::~CarServer(){
 
 void CarServer::Start(){
   s.sin_family = AF_INET;
-  s.sin_port = htons(5000);
+  s.sin_port = htons(5001);
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
   server_thread = new std::thread(&CarServer::SyncronizeState, this);

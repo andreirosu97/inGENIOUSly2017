@@ -54,7 +54,6 @@ public:
   }
 
   void update_state_rf_found(unsigned int tag_id) {
-    std::cout << tag_id << " " << last_rf_tag << "\n";
     if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01  && last_rf_tag!=tag_id){
       sleep(2);
       shutdown=1;
@@ -62,9 +61,11 @@ public:
 
     else if (cur_state == MOVING_OUT && tag_id != last_rf_tag) {
       cur_state = STOPPED;
+      std::cout<<"STOPPED"<<std::endl;
       stop_time = clock();
     } else if (cur_state == MOVING_IN && tag_id != last_rf_tag) {
       cur_state = MOVING_OUT;
+      std::cout<<"MOVING OUT!"<<std::endl;
     }
   }
 
@@ -128,10 +129,12 @@ public:
         this->direction=0;
         this->speed=0;
     }
+
   }
 
   void update_motor_speed(int speed){
     this->speed=speed;
+    get_state();
   }
 
   std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
@@ -144,22 +147,23 @@ public:
       if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cur_state = MOVING_IN;
         std::cout<<"MOVING IN"<<std::endl;
-        motor_state = std::make_pair(this->direction,this->speed);
+        motor_state.first=direction;
+        motor_state.second=speed;
       } else {
         motor_state = std::make_pair(0, 0);
       }
     }
     else {
-      motor_state= std::make_pair(this->direction,this->speed);
+      motor_state.first=direction;
+      motor_state.second=speed;
     }
-
     return motor_state;
   }
 
   void get_state(){
-    std::cout<<"Speed:"<<this->speed<<std::endl;
-    std::cout<<"Direction:"<<this->direction<<std::endl;
-    std::cout<<"Shut down:"<<this->shutdown<<std::endl;
+    std::cout<<"Speed:"<<std::dec<<this->speed<<std::endl;
+    std::cout<<"Direction:"<<std::dec<<this->direction<<std::endl;
+    std::cout<<"Shut down:"<<std::dec<<this->shutdown<<std::endl;
   }
 
   void shut_down() {

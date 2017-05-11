@@ -27,4 +27,4 @@ while(True):
         stop_mesaj = [0x02, 0xAA, 0xBB, 0xCC, 0xDD]
         sock.sendto(bytes(stop_mesaj), ('255.255.255.255', 5001))
     else:
-        sock.sendto(bytes(msg, "ascii"), ('255.255.255.255', 5001))
+        sock.sendto(bytes(msg,"ascii"), ('255.255.255.255', 5001))
