@@ -12,6 +12,7 @@ CarRF::CarRF(CarState *state) {
 
 CarRF::~CarRF() {
   thread_on=0;
+  rf_thread->join();
   std::cout<<"CLOSING RF!"<<std::endl;
 }
 
@@ -19,7 +20,7 @@ void CarRF::Start() {
   wiringPiSPISetup(0, 10000000);
   InitRc522();
   rf_thread = new std::thread(&CarRF::SyncronizeState, this);
-  rf_thread->detach();
+
 }
 
 void CarRF::SyncronizeState() {

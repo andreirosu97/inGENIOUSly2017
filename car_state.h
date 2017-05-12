@@ -55,6 +55,26 @@ public:
     return direction;
   }
 
+  void update_rf_tag(unsigned int uid) {
+    std::lock_guard<std::mutex> guard(update_state);
+    int found = 0, poz;
+
+    //Search
+    for (int iterator = 0; iterator < nr_i_map; ++iterator) {
+      if (i_map[iterator][0] == uid) {
+        found = 1;
+        poz = iterator;
+      }
+    }
+
+    if (!found) {;
+      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    } else {
+      update_state_rf_found(i_map[poz][1]);
+      last_rf_tag = i_map[poz][1];
+    }
+  }
+
   void update_state_rf_found(unsigned int tag_id) {
     if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && last_rf_tag!=0x01  && last_rf_tag!=tag_id){
       sleep(2);
@@ -68,25 +88,6 @@ public:
     } else if (cur_state == MOVING_IN && tag_id != last_rf_tag) {
       cur_state = MOVING_OUT;
       std::cout<<"MOVING OUT!"<<std::endl;
-    }
-  }
-
-  void update_rf_tag(unsigned int uid) {
-    std::lock_guard<std::mutex> guard(update_state);
-    int found = 0, poz;
-
-    for (int iterator = 0; iterator < nr_i_map; ++iterator) {
-      if (i_map[iterator][0] == uid) {
-        found = 1;
-        poz = iterator;
-      }
-    }
-
-    if (!found) {;
-      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
-    } else {
-      update_state_rf_found(i_map[poz][1]);
-      last_rf_tag = i_map[poz][1];
     }
   }
 
@@ -169,6 +170,7 @@ public:
 
   void shut_down() {
     shutdown = true;
+    this->direction=this->speed=0;
   }
 
   bool is_shutting_down() {

@@ -14,6 +14,7 @@ void CarController::Start() {
 
 
   connection->Connect();
+  
   connection->Start();
   motor->Start();
   rf->Start();

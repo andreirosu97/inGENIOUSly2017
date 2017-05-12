@@ -33,7 +33,7 @@ void CarMotor::Start() {
   softPwmCreate(PWM_4, 0, 100);
 
   motor_thread = new std::thread(&CarMotor::SyncronizeState, this);
-  motor_thread->detach();
+
 }
 
 CarMotor::CarMotor(CarState* state) {
@@ -95,6 +95,7 @@ void CarMotor::SyncronizeState() {
 
 CarMotor::~CarMotor() {
   thread_on=0;
+  motor_thread->join();
   softPwmWrite(PWM_1, 0);
   softPwmWrite(PWM_2, 0);
   softPwmWrite(PWM_3, 0);

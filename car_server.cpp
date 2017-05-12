@@ -9,6 +9,7 @@ CarServer::CarServer(CarState* state, int fd_socket):
 
 CarServer::~CarServer(){
   thread_on=0;
+  server_thread->join();
   std::cout<<"CLOSING SERVER!"<<std::endl;
 }
 
@@ -18,7 +19,7 @@ void CarServer::Start(){
   s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
   server_thread = new std::thread(&CarServer::SyncronizeState, this);
-  server_thread->detach();
+
 }
 
 void CarServer::SendMessage(char* message) {
