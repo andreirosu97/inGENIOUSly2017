@@ -43,6 +43,7 @@ void CarConnection::Start(){
   server = new CarServer(state, fd_socket);
 
   client->Start();
+  while(!state->start_car());
   server->Start();
 }
 

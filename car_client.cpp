@@ -27,7 +27,7 @@ void CarClient::SyncronizeState(){
   /*Initializing variables */
   fd_set fd_reading;
 
-  int max_size = 60;
+  int max_size = 1000;
   struct timeval timeout;
   FD_ZERO(&fd_reading);
   FD_SET(fd_socket, &fd_reading);
@@ -38,7 +38,7 @@ void CarClient::SyncronizeState(){
   int retval;
 
   while(thread_on){
-      char msg[60];
+      char msg[1000];
       int recv_size = recv(fd_socket, msg, max_size, 0);
 
       int speed=0;

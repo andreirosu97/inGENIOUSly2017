@@ -14,8 +14,12 @@ void CarController::Start() {
 
 
   connection->Connect();
-  
+
   connection->Start();
+
+  while(!state->start_car() );//Sleep till the map was recieved
+  std::cout<<"Car Start moving!"<<std::endl;
+  
   motor->Start();
   rf->Start();
 
