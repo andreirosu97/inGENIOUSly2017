@@ -25,12 +25,12 @@
 class CarMotor {
 private:
     CarState* state;
-    std::thread* motor_thread;
+    std::unique_ptr<std::thread> motor_thread;
     void SyncronizeState();
     void SetDirection (int direction);
     void SetSpeed (int speed);
 
-    int thread_on=1;
+    int thread_on = 1;
 
   public:
     CarMotor(CarState* state);

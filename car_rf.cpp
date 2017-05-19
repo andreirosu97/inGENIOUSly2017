@@ -19,8 +19,7 @@ CarRF::~CarRF() {
 void CarRF::Start() {
   wiringPiSPISetup(0, 10000000);
   InitRc522();
-  rf_thread = new std::thread(&CarRF::SyncronizeState, this);
-
+  rf_thread = std::unique_ptr<std::thread>(new std::thread(&CarRF::SyncronizeState, this));
 }
 
 void CarRF::SyncronizeState() {

@@ -22,16 +22,16 @@ class CarServer {
 private:
     int fd_socket;
     CarState* state;
-    std::thread* server_thread;
+    std::unique_ptr<std::thread> server_thread;
     struct sockaddr_in s;
-    int thread_on=1;
-
-
+    int thread_on = 1;
+    int port;
+    
     void SendMessage(char* message);
     void SyncronizeState();
 
   public:
-    CarServer(CarState* state, int fd_socket);
+    CarServer(CarState* state, int fd_socket, int port);
     ~CarServer();
     void Start();
 

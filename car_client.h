@@ -11,9 +11,9 @@ class CarClient {
     std::pair<const std::string, const int> serverAddress;
     int fd_socket;
     CarState* state;
-    std::thread* client_thread; // OWNER
-    int thread_on=1;
-    
+    std::unique_ptr<std::thread> client_thread;
+    int thread_on = 1;
+
     void SyncronizeState();
 
   public:

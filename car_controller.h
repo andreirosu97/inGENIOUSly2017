@@ -16,8 +16,8 @@ class CarController {
     std::unique_ptr<CarMotor> motor;
 
   public:
-    CarController();
-
+    CarController() {};
+    
     ~CarController() {
       std::cout<<"CAR IS SHUTTING DOWN!"<<std::endl;
     };

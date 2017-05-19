@@ -9,15 +9,14 @@ class CarConnection {
   std::pair<const std::string, const int> serverAddress;
   int fd_socket;
   CarState* state;
-  CarServer* server; // OWNER
-  CarClient* client; // OWNER
+  std::unique_ptr<CarServer> server;
+  std::unique_ptr<CarClient> client;
 
 public:
   CarConnection(CarState* state, std::pair<const std::string, const int> serverAddress);
   ~CarConnection();
   void Connect();
   void Start();
-
 };
 
 

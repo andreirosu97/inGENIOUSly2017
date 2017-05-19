@@ -10,7 +10,7 @@ class CarRF {
     unsigned char buffer_tag[20], buffer_uid[20];
 
     CarState* state;
-    std::thread* rf_thread;
+    std::unique_ptr<std::thread> rf_thread;
     int thread_on=1;
     void SyncronizeState();
 

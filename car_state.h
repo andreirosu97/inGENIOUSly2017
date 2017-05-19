@@ -12,11 +12,11 @@
 class CarState {
 private:
   /* ============== STATE PARAMETERS ============== */
-  bool route=false;
-  int direction=0;
-  int speed=0;
-  int shutdown=0;//car client sets it
-  char car_type=0xff;
+  bool route = false;
+  int direction = 0;
+  int speed = 0;
+  int shutdown = 0;//car client sets it
+  char car_type = 0xff;
 
   enum STATE {
     STOPPED = 0x01,
@@ -27,7 +27,7 @@ private:
 
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
-  std::queue <char > car_route;
+  std::queue <char> car_route;
 
   /* ============== MUTEXES ============== */
   std::mutex update_state;
@@ -58,14 +58,14 @@ public:
     cars_states[8].second = 0x03;
   }
 
-  ~CarState(){std::cout<<"CLOSING STATE!"<<std::endl;}
+  ~CarState() {std::cout << "CLOSING STATE!" << std::endl;}
 
   /* ============== STATE QUERY METHODS ============== */
 
   void get_state(){
-    std::cout<<"Speed:"<<std::dec<<this->speed<<std::endl;
-    std::cout<<"Direction:"<<std::dec<<this->direction<<std::endl;
-    std::cout<<"Shut down:"<<std::dec<<this->shutdown<<std::endl;
+    std::cout<<"Speed: " << std::dec << this->speed << std::endl;
+    std::cout<<"Direction: " << std::dec << this->direction << std::endl;
+    std::cout<<"Shut down: " << std::dec << this->shutdown << std::endl;
   }
 
   bool start_car(){
@@ -78,7 +78,6 @@ public:
 
   void shut_down() {
     shutdown = true;
-    this->direction=this->speed=0;
   }
 
   void get_my_state(unsigned char* state){
@@ -190,41 +189,41 @@ public:
 
   /* ================= RF UPDATE METHODS ============== */
 
-    void update_rf_tag(unsigned int uid) {
-      std::lock_guard<std::mutex> guard(update_state);
-      int found = 0, poz;
+  void update_rf_tag(unsigned int uid) {
+    std::lock_guard<std::mutex> guard(update_state);
+    int found = 0, poz;
 
-      //Search
-      for (int i = 0; i < nr_i_map; ++i) {
-        if (i_map[i][0] == uid) {
-          found = 1;
-          poz = i;
-        }
-      }
-
-      if (!found) {;
-        std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
-      } else {
-        update_state_rf_found(i_map[poz][1]);
-        cars_states[8].first = i_map[poz][1];
+    //Search
+    for (int i = 0; i < nr_i_map; ++i) {
+      if (i_map[i][0] == uid) {
+        found = 1;
+        poz = i;
       }
     }
 
-    void update_state_rf_found(unsigned int tag_id) {
-      if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && cars_states[8].first!=0x01  && cars_states[8].first!=tag_id){
-        sleep(2);
-        shut_down();
-      }
-
-      else if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
-        cars_states[8].second=STOPPED;
-        std::cout<<"STOPPED"<<std::endl;
-        stop_time = clock();
-      } else if (cars_states[8].second == MOVING_IN && tag_id != cars_states[8].first) {
-        cars_states[8].second = MOVING_OUT;
-        std::cout<<"MOVING OUT!"<<std::endl;
-      }
+    if (!found) {;
+      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    } else {
+      update_state_rf_found(i_map[poz][1]);
+      cars_states[8].first = i_map[poz][1];
     }
+  }
+
+  void update_state_rf_found(unsigned int tag_id) {
+    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && cars_states[8].first!=0x01  && cars_states[8].first!=tag_id){
+      sleep(2);
+      shut_down();
+    }
+
+    else if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
+      cars_states[8].second=STOPPED;
+      std::cout<<"STOPPED"<<std::endl;
+      stop_time = clock();
+    } else if (cars_states[8].second == MOVING_IN && tag_id != cars_states[8].first) {
+      cars_states[8].second = MOVING_OUT;
+      std::cout<<"MOVING OUT!"<<std::endl;
+    }
+  }
 
 };
 
