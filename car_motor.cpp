@@ -93,7 +93,7 @@ void CarMotor::SyncronizeState() {
 }
 
 CarMotor::~CarMotor() {
-  thread_on=0;
+  thread_on = 0;
   motor_thread->join();
   softPwmWrite(PWM_1, 0);
   softPwmWrite(PWM_2, 0);

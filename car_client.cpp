@@ -15,7 +15,7 @@ CarClient::CarClient(CarState* state, int fd_socket):
 
 CarClient::~CarClient() {
   thread_on = 0;
-  client_thread->join();
+  // client_thread->join(); poate ramane in blocking call la recv, lasam fara momentan
   std::cout<< "CLOSING CLIENT!" << std::endl;
 }
 
@@ -37,34 +37,31 @@ void CarClient::SyncronizeState(){
   /*Reading loop*/
   int retval;
 
-  while(thread_on){
+  while(thread_on) {
       char msg[1000];
       int recv_size = recv(fd_socket, msg, max_size, 0);
 
       int speed=0;
       msg[recv_size] = '\0';
 
-      if(msg[0]!=0x01 && msg[0]!=0x02 && msg[0]!=0x03)
-      {
+      if(msg[0] != 0x01 && msg[0] != 0x02 && msg[0]! = 0x03) {
         std::string message;
         message=std::string(msg);
         std::cout<<"Receptionat: "<<message<<std::endl;
         std::size_t pos = message.find(" ");
-        if(pos<message.size()){// Message of 2 arguments
+        if(pos < message.size()){ // Message of 2 arguments
 
           std::string string_speed = message.substr (pos);
-          message=message.substr (0,pos);
-          speed=std::stoi(string_speed);
+          message = message.substr (0,pos);
+          speed = std::stoi(string_speed);
           state->update_motor_direction(message);
           state->update_motor_speed(speed);
         }
-        else//Single argument message
+        else //Single argument message
           state->update_motor_direction(message);
       }
       else
         state->update_continental(msg);
-
-      //state->get_state();
   }
   return;
 }

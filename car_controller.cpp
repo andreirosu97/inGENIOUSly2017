@@ -15,7 +15,7 @@ void CarController::Start() {
   std::string ip = "0.0.0.0";
   int port = 5001;
 
-  std::cout << "Initializarea pornita" << "\n";
+  std::cout << "Initializarea pornita" << std::endl;
 
   std::cout << "IP: " << ip << std::endl;;
   std::cout << "Port: " << port << std::endl;;
@@ -30,7 +30,7 @@ void CarController::Start() {
   connection->Connect();
   connection->Start();
 
-  while(!state->start_car() );//Sleep till the map was recieved
+  while(!state->start_car() ); //Sleep till the map was recieved
   std::cout<<"Car Start moving!"<<std::endl;
 
   motor->Start();
