@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <csignal>
 
-
 namespace {
   int signal_shutdown = 0;
   void SignalHandler(int signal) {

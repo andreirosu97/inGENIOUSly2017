@@ -15,12 +15,12 @@ CarClient::CarClient(CarState* state, int fd_socket):
 
 CarClient::~CarClient() {
   thread_on = 0;
-  // client_thread->join(); poate ramane in blocking call la recv, lasam fara momentan
   std::cout<< "CLOSING CLIENT!" << std::endl;
 }
 
 void CarClient::Start(){
   client_thread = std::unique_ptr<std::thread>(new std::thread(&CarClient::SyncronizeState, this));
+  client_thread->detach(); //lasam sa se crashuiasca singur
 }
 
 void CarClient::SyncronizeState(){
@@ -44,7 +44,7 @@ void CarClient::SyncronizeState(){
       int speed=0;
       msg[recv_size] = '\0';
 
-      if(msg[0] != 0x01 && msg[0] != 0x02 && msg[0]! = 0x03) {
+      if(msg[0] != 0x01 && msg[0] != 0x02 && msg[0] != 0x03) {
         std::string message;
         message=std::string(msg);
         std::cout<<"Receptionat: "<<message<<std::endl;

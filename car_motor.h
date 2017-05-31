@@ -22,13 +22,27 @@
 #define PIN_4_1 4 // Connect to IN 4_2
 #define PIN_4_2 5 // Connect to IN 4_1
 
+// Pini line follower
+const int PIN_FOLLOW_STANGA = 0;
+const int PIN_FOLLOW_MIJLOC = 1;
+const int PIN_FOLLOW_DREAPTA = 2;
+
 class CarMotor {
 private:
+    enum TipCorectie {
+      STANGA = 1,
+      DREAPTA = 2,
+      MIJLOC = 0
+    };
+
     CarState* state;
     std::unique_ptr<std::thread> motor_thread;
     void SyncronizeState();
     void SetDirection (int direction);
-    void SetSpeed (int speed);
+    void SetSpeedLeft(int speed);
+    void SetSpeedRight(int speed);
+
+    TipCorectie GetCorrectionMode();
 
     int thread_on = 1;
 

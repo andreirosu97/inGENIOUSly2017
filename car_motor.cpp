@@ -3,6 +3,7 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 #include <unistd.h>
+#include <algorithm>
 
 void CarMotor::Start() {
   if(wiringPiSetup() < 0) {
@@ -26,6 +27,9 @@ void CarMotor::Start() {
   pinMode(PIN_4_1, OUTPUT);
   pinMode(PIN_4_2, OUTPUT);
 
+  pinMode(PIN_FOLLOW_STANGA, INPUT);
+  pinMode(PIN_FOLLOW_DREAPTA, INPUT);
+  pinMode(PIN_FOLLOW_MIJLOC, INPUT);
 
   softPwmCreate(PWM_1, 0, 100);
   softPwmCreate(PWM_2, 0, 100);
@@ -39,9 +43,12 @@ CarMotor::CarMotor(CarState* state) {
   this->state = state;
 }
 
-void CarMotor::SetSpeed(int speed) {
+void CarMotor::SetSpeedLeft(int speed) {
   softPwmWrite(PWM_1, speed);
   softPwmWrite(PWM_2, speed);
+}
+
+void CarMotor::SetSpeedRight(int speed) {
   softPwmWrite(PWM_3, speed);
   softPwmWrite(PWM_4, speed);
 }
@@ -83,12 +90,46 @@ void CarMotor::SetDirection(int direction) {
   }
 }
 
+CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
+  int valStanga = digitalRead(PIN_FOLLOW_STANGA);
+  int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
+  int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
+
+  std::cout << "VALOARE STANGA: " << valStanga << "\n";
+  std::cout << "VALOARE MIJLOC: " << valMijloc << "\n";
+  std::cout << "VALOARE DREAPTA: " << valDreapta << "\n";
+
+  if (valDreapta == 0 && valStanga == 1)
+    return DREAPTA;
+  if (valStanga == 0 && valDreapta == 1)
+    return STANGA;
+
+  return MIJLOC;
+}
+
 void CarMotor::SyncronizeState() {
   while(thread_on) {
-    std::pair<int, int> motorState = state->get_motor_state();
-    SetDirection(motorState.first);
-    SetSpeed(motorState.second);
-    sleep(0.05);
+    if (state->get_car_state() == 1) {  // mersul inainte
+      std::pair<int, int> motorState = state->get_motor_state();
+      SetDirection(motorState.first);
+      TipCorectie correction_mode = GetCorrectionMode();
+
+      int vitezaStanga = motorState.second;
+      int vitezaDreapta = motorState.second;
+      if (correction_mode == STANGA) {
+        vitezaStanga = 1;
+        vitezaDreapta = std::min(80, motorState.second * 2);
+        std::cout << "Corectie stanga!\n";
+      } else if (correction_mode == DREAPTA) {
+        vitezaStanga = std::min(80, motorState.second * 2);
+        vitezaDreapta = 1;
+        std::cout << "Corectie dreapta!\n";
+      }
+
+      SetSpeedLeft(vitezaStanga);
+      SetSpeedRight(vitezaDreapta);
+      //sleep(0.05);
+    }
   }
 }
 

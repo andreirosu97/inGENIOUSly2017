@@ -24,7 +24,6 @@ private:
     MOVING_OUT = 0x03
   };
 
-
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
@@ -161,7 +160,7 @@ public:
         std::cout<<std::hex<<(int)car_route.front()<<std::endl;
         car_route.pop();
       }
-      this->speed=20;
+      this->speed=40;
       this->direction=1;
       route=true;
     }
@@ -210,12 +209,12 @@ public:
   }
 
   void update_state_rf_found(unsigned int tag_id) {
-    if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && cars_states[8].first!=0x01  && cars_states[8].first!=tag_id){
+    /*if( (tag_id == 0x21 || tag_id == 0x13 || tag_id== 0x14 || tag_id==0x12) && cars_states[8].first!=0x01  && cars_states[8].first!=tag_id){
       sleep(2);
       shut_down();
-    }
+    }*/
 
-    else if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
+    if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
       cars_states[8].second=STOPPED;
       std::cout<<"STOPPED"<<std::endl;
       stop_time = clock();
@@ -223,6 +222,10 @@ public:
       cars_states[8].second = MOVING_OUT;
       std::cout<<"MOVING OUT!"<<std::endl;
     }
+  }
+
+  int get_car_state() {
+    return 1;
   }
 
 };
