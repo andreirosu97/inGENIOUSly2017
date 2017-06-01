@@ -13,8 +13,8 @@ class CarState {
 private:
   /* ============== STATE PARAMETERS ============== */
   bool route = false;
-  int direction = 0;
   int speed = 0;
+  int direction = 0;
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
 
@@ -97,28 +97,27 @@ public:
     state[5] = 0x00;
   }
 
-  std::pair<int,int> get_motor_state() { // daca nu exista mesaj?
+  std::pair<MOTOR_STATE, int> get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
 
-    std::pair<int, int> motor_state;
+    std::pair<MOTOR_STATE, int> motor_state;
 
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
       if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cars_states[8].second = MOVING_IN;
-        std::cout<<"MOVING IN"<<std::endl;
-        motor_state.first=direction;
-        motor_state.second=speed;
+        std::cout << "MOVING IN" << std::endl;
+        motor_state.first = CarMotor::FORWARD;
+        motor_state.second = speed;
       } else {
-        motor_state = std::make_pair(0, 0);
+        motor_state = std::make_pair(OPRIT, 0);
       }
     }
     else {
-      motor_state.first=direction;
-      motor_state.second=speed;
+      motor_state.first = direction;
+      motor_state.second = speed;
     }
     return motor_state;
-  }
 
 
 /* ============= UPDATE STATES METHODS ============== */
@@ -163,35 +162,39 @@ public:
         j+=len+1;
       }while(idMasina<8 && j<strlen(mesaj));
 
-      std::cout<<"The Route is :"<<std::endl;
+      std::cout << "The Route is :" << std::endl;
       while(!car_route.empty()){
         std::cout<<std::hex<<(int)car_route.front()<<std::endl;
         car_route.pop();
       }
-      this->speed=40;
-      this->direction=1;
-      route=true;
+      this->speed = 40;
+      this->direction = CarMotor::FORWARD;
+      route = true;
     }
   }
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
     if(direction == "SD"){
-        this->direction=this->speed=0;
+        this->direction = this->speed = 0;
         shut_down();
     } else if(direction=="F") {
-        this->direction=1;
+        this->direction = CarMotor::FORWARD;
     } else if(direction=="B") {
-        this->direction=-1;
+        this->direction = CarMotor::BACKWARD;
     } else if(direction=="S"){
-        this->direction=0;
-        this->speed=0;
+        this->direction = CarMotor::STOP;
+        this->speed = 0;
     }
 
   }
 
   void update_motor_speed(int speed){
-    this->speed=speed;
+      this->speed = speed;
+  }
+
+  void update_motor_direction(CarMotor::Direction direction) {
+      this->direction = direction;
   }
 
   /* ================= RF UPDATE METHODS ============== */
@@ -223,17 +226,13 @@ public:
     }*/
 
     if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
-      cars_states[8].second=STOPPED;
+      cars_states[8].second = STOPPED;
       std::cout<<"STOPPED"<<std::endl;
       stop_time = clock();
     } else if (cars_states[8].second == MOVING_IN && tag_id != cars_states[8].first) {
       cars_states[8].second = MOVING_OUT;
-      std::cout<<"MOVING OUT!"<<std::endl;
+      std::cout << "MOVING OUT!" << std::endl;
     }
-  }
-
-  int get_car_state() {
-    return 1;
   }
 
 };

@@ -62,85 +62,126 @@ void CarMotor::SetSpeedRight(int speed) {
   softPwmWrite(PWM_4, speed);
 }
 
-void CarMotor::SetDirection(int direction) {
-  if (direction == 1) {
-    digitalWrite(BACK_LIGHT_1, LOW);
-
-    digitalWrite(PIN_1_1, HIGH);
-    digitalWrite(PIN_2_1, HIGH);
-    digitalWrite(PIN_3_1, HIGH);
-    digitalWrite(PIN_4_1, HIGH);
-    digitalWrite(PIN_1_2, LOW);
-    digitalWrite(PIN_2_2, LOW);
-    digitalWrite(PIN_3_2, LOW);
-    digitalWrite(PIN_4_2, LOW);
-
-  } else if(direction == -1){
-    digitalWrite(BACK_LIGHT_1, LOW);
-
-    digitalWrite(PIN_1_1, LOW);
-    digitalWrite(PIN_2_1, LOW);
-    digitalWrite(PIN_3_1, LOW);
-    digitalWrite(PIN_4_1, LOW);
-    digitalWrite(PIN_1_2, HIGH);
-    digitalWrite(PIN_2_2, HIGH);
-    digitalWrite(PIN_3_2, HIGH);
-    digitalWrite(PIN_4_2, HIGH);
-
-  }else if(direction == 0){
-
-
-    digitalWrite(PIN_1_1, LOW);
-    digitalWrite(PIN_2_1, LOW);
-    digitalWrite(PIN_3_2, LOW);
-    digitalWrite(PIN_4_2, LOW);
-    digitalWrite(PIN_1_2, LOW);
-    digitalWrite(PIN_2_2, LOW);
-    digitalWrite(PIN_3_1, LOW);
-    digitalWrite(PIN_4_1, LOW);
-
-  }
+void CarMotor::SetDirectionLeft(Direction direction) {
+    if (direction == FORWARD) {
+        digitalWrite(PIN_1_1, HIGH);
+        digitalWrite(PIN_2_1, HIGH);
+        digitalWrite(PIN_1_2, LOW);
+        digitalWrite(PIN_2_2, LOW);
+    } else if (direction == BACKWARD) {
+        digitalWrite(PIN_1_1, LOW);
+        digitalWrite(PIN_2_1, LOW);
+        digitalWrite(PIN_1_2, HIGH);
+        digitalWrite(PIN_2_2, HIGH);
+    } else if (direction == STOP) {
+        digitalWrite(PIN_1_1, LOW);
+        digitalWrite(PIN_2_1, LOW);
+        digitalWrite(PIN_1_2, LOW);
+        digitalWrite(PIN_2_2, LOW);
+    }
 }
+
+void CarMotor::SetDirectionRight(Direction direction) {
+    if (direction == FORWARD) {
+        digitalWrite(PIN_3_1, HIGH);
+        digitalWrite(PIN_4_1, HIGH);
+        digitalWrite(PIN_3_2, LOW);
+        digitalWrite(PIN_4_2, LOW);
+    } else if (direction == BACKWARD) {
+        digitalWrite(PIN_3_1, LOW);
+        digitalWrite(PIN_4_1, LOW);
+        digitalWrite(PIN_3_2, HIGH);
+        digitalWrite(PIN_4_2, HIGH);
+    } else if (direction == STOP) {
+        digitalWrite(PIN_3_1, LOW);
+        digitalWrite(PIN_4_1, LOW);
+        digitalWrite(PIN_3_2, LOW);
+        digitalWrite(PIN_4_2, LOW);
+    }
+}
+
+void CarMotor::SetDirection(Direction direction) {
+    if (direction == FORWARD) {
+        digitalWrite(BACK_LIGHT_1, LOW);
+        SetDirectionLeft(FORWARD);
+        SetDirectionRight(FORWARD);
+    } else if(direction == BACKWARD) {
+        digitalWrite(BACK_LIGHT_1, LOW);
+        SetDirectionLeft(BACKWARD);
+        SetDirectionRight(BACKWARD);
+    } else if(direction == STOP) {
+        SetDirectionLeft(STOP);
+        SetDirectionRight(STOP);
+    } else if(direction == LEFT) {
+        SetDirectionLeft(BACKWARD);
+        SetDirectionRight(FORWARD);
+    } else if (direction == RIGHT) {
+        SetDirectionLeft(FORWARD);
+        SetDirectionRight(BACKWARD);
+    }
+}
+
 
 CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valStanga = digitalRead(PIN_FOLLOW_STANGA);
   int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
   int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
 
-  //std::cout << "VALOARE STANGA: " << valStanga << "\n";
-  //std::cout << "VALOARE MIJLOC: " << valMijloc << "\n";
-  //std::cout << "VALOARE DREAPTA: " << valDreapta << "\n";
+  const int NEGRU = 1;
+  const int ALB = 0;
 
-  if (valDreapta == 0 && valStanga == 1)
+  if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU) {
+    return MIJLOC;
+  if (valDreapta == ALB && valStanga == NEGRU)
     return DREAPTA;
-  if (valStanga == 0 && valDreapta == 1)
+  if (valStanga == ALB && valDreapta == NEGRU)
     return STANGA;
 
-  return MIJLOC;
+  return UNKNOWN;
 }
 
 void CarMotor::SyncronizeState() {
   while(thread_on) {
-    if (state->get_car_state() == 1) {  // mersul inainte
-      std::pair<int, int> motorState = state->get_motor_state();
-      SetDirection(motorState.first);
-      TipCorectie correction_mode = GetCorrectionMode();
+    Directie directie = state->get_motor_state().first; 
+    int speed = state->get_motor_state().second;
+    SetDirection(directie);
 
-      int vitezaStanga = motorState.second;
-      int vitezaDreapta = motorState.second;
-      if (correction_mode == STANGA) {
-        vitezaStanga = 1;
-        vitezaDreapta = std::min(80, motorState.second * 2);
-        std::cout << "Corectie stanga!\n";
-      } else if (correction_mode == DREAPTA) {
-        vitezaStanga = std::min(80, motorState.second * 2);
-        vitezaDreapta = 1;
-        std::cout << "Corectie dreapta!\n";
-      }
-      std::cout<<vitezaStanga<<" "<<vitezaDreapta<<std::endl;
-      SetSpeedLeft(vitezaStanga);
-      SetSpeedRight(vitezaDreapta);
-      //sleep(0.05);
+    if (directie == FORWARD) {
+        TipCorectie correction_mode = GetCorrectionMode();
+
+        int vitezaStanga = motorState.second;
+        int vitezaDreapta = motorState.second;
+        if (correction_mode == STANGA) {
+            vitezaStanga = 1;
+            vitezaDreapta = std::min(80, motorState.second * 2);
+        } else if (correction_mode == DREAPTA) {
+            vitezaStanga = std::min(80, motorState.second * 2);
+            vitezaDreapta = 1;
+        }
+        SetSpeedLeft(vitezaStanga);
+        SetSpeedRight(vitezaDreapta);
+    } else if (directie == STOP) {
+        SetSpeedLeft(0);
+        SetSpeedRight(0);
+    } else if (directie == BACKWARD) {
+        SetSpeedLeft(-speed);
+        SetSpeedRight(-speed);
+    } else if (directie == LEFT || directie == RIGHT) {
+        SetSpeedLeft(speed);
+        SetSpeedRight(speed);
+        if (is_turning) {
+            clock_t current_time = clock();
+            if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.5) {
+                TipCorectie correction_mode = GetCorrectionMode();
+                if (correction_mode == MIJLOC) {
+                    state->update_motor_direction(FORWARD);
+                    is_turning = false;
+                }
+            }
+        } else {
+            turn_time = clock();
+            is_turning = true;
+        }
     }
   }
 }
