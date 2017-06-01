@@ -10,6 +10,7 @@ void CarMotor::Start() {
     std::cout << "Nu a mers wiringPiSetupul";
     state->shut_down();
   }
+  pinMode(BACK_LIGHT_1, OUTPUT);
 
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
@@ -44,17 +45,26 @@ CarMotor::CarMotor(CarState* state) {
 }
 
 void CarMotor::SetSpeedLeft(int speed) {
+  if(speed==0)
+    digitalWrite(BACK_LIGHT_1, HIGH);
+  else
+    digitalWrite(BACK_LIGHT_1, LOW);
   softPwmWrite(PWM_1, speed);
   softPwmWrite(PWM_2, speed);
 }
 
 void CarMotor::SetSpeedRight(int speed) {
+  if(speed==0)
+    digitalWrite(BACK_LIGHT_1, HIGH);
+  else
+    digitalWrite(BACK_LIGHT_1, LOW);
   softPwmWrite(PWM_3, speed);
   softPwmWrite(PWM_4, speed);
 }
 
 void CarMotor::SetDirection(int direction) {
   if (direction == 1) {
+    digitalWrite(BACK_LIGHT_1, LOW);
 
     digitalWrite(PIN_1_1, HIGH);
     digitalWrite(PIN_2_1, HIGH);
@@ -66,6 +76,7 @@ void CarMotor::SetDirection(int direction) {
     digitalWrite(PIN_4_2, LOW);
 
   } else if(direction == -1){
+    digitalWrite(BACK_LIGHT_1, LOW);
 
     digitalWrite(PIN_1_1, LOW);
     digitalWrite(PIN_2_1, LOW);
@@ -77,6 +88,7 @@ void CarMotor::SetDirection(int direction) {
     digitalWrite(PIN_4_2, HIGH);
 
   }else if(direction == 0){
+
 
     digitalWrite(PIN_1_1, LOW);
     digitalWrite(PIN_2_1, LOW);
@@ -95,9 +107,9 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
   int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
 
-  std::cout << "VALOARE STANGA: " << valStanga << "\n";
-  std::cout << "VALOARE MIJLOC: " << valMijloc << "\n";
-  std::cout << "VALOARE DREAPTA: " << valDreapta << "\n";
+  //std::cout << "VALOARE STANGA: " << valStanga << "\n";
+  //std::cout << "VALOARE MIJLOC: " << valMijloc << "\n";
+  //std::cout << "VALOARE DREAPTA: " << valDreapta << "\n";
 
   if (valDreapta == 0 && valStanga == 1)
     return DREAPTA;
@@ -125,7 +137,7 @@ void CarMotor::SyncronizeState() {
         vitezaDreapta = 1;
         std::cout << "Corectie dreapta!\n";
       }
-
+      std::cout<<vitezaStanga<<" "<<vitezaDreapta<<std::endl;
       SetSpeedLeft(vitezaStanga);
       SetSpeedRight(vitezaDreapta);
       //sleep(0.05);
@@ -136,6 +148,8 @@ void CarMotor::SyncronizeState() {
 CarMotor::~CarMotor() {
   thread_on = 0;
   motor_thread->join();
+
+  digitalWrite(BACK_LIGHT_1, LOW);
   softPwmWrite(PWM_1, 0);
   softPwmWrite(PWM_2, 0);
   softPwmWrite(PWM_3, 0);
