@@ -131,13 +131,13 @@ void CarMotor::SyncronizeState() {
       if (correction_mode == STANGA) {
         vitezaStanga = 1;
         vitezaDreapta = std::min(80, motorState.second * 2);
-        std::cout << "Corectie stanga!\n";
+      //  std::cout << "Corectie stanga!\n";
       } else if (correction_mode == DREAPTA) {
         vitezaStanga = std::min(80, motorState.second * 2);
         vitezaDreapta = 1;
-        std::cout << "Corectie dreapta!\n";
+      //  std::cout << "Corectie dreapta!\n";
       }
-      std::cout<<vitezaStanga<<" "<<vitezaDreapta<<std::endl;
+      //std::cout<<vitezaStanga<<" "<<vitezaDreapta<<std::endl;
       SetSpeedLeft(vitezaStanga);
       SetSpeedRight(vitezaDreapta);
       //sleep(0.05);

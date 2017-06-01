@@ -24,9 +24,16 @@ private:
     MOVING_OUT = 0x03
   };
 
+  enum TURN{
+    NONE = 0,
+    RIGHT = 1,
+    LEFT = -1
+  };
+
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
+  std::queue <int> car_route_decoded;
 
   /* ============== MUTEXES ============== */
   std::mutex update_state;
@@ -34,6 +41,8 @@ private:
   /* ============== RFID MAP ============== */
 
   unsigned int last_rf_tag = 0x01;
+  unsigned int entry_point = 0x01;
+
   const int nr_i_map = 17;
   unsigned int i_map[17][2] = {
     {0xa0b8557e, 0x11},
@@ -121,6 +130,35 @@ public:
   }
 
 
+  void decode(){
+    int mask = 15;
+    int next_point;
+    while( !car_route.empty() ){
+      next_point = ( (int)car_route.front()) & mask;
+      car_route.pop();
+      if( next_point%2 == entry_point%2){
+        car_route_decoded.push(NONE);
+      }else if( next_point > entry_point || ( next_point== 0x01 && entry_point== 0x04) ){
+        car_route_decoded.push(LEFT);
+      }
+      else if( next_point < entry_point || ( next_point== 0x04 && entry_point== 0x01) ){
+        car_route_decoded.push(RIGHT);
+      }
+
+      if( next_point == 0x02 )
+        entry_point = 0x04;
+      else if( next_point == 0x04 )
+        entry_point = 0x02;
+      else if( next_point == 0x03)
+        entry_point = 0x01;
+      else
+        entry_point = 0x03;
+    }
+    while(!(car_route_decoded.empty()) ){
+      std::cout<<car_route_decoded.front()<<std::endl;
+      car_route_decoded.pop();
+    }
+  }
 /* ============= UPDATE STATES METHODS ============== */
 
   void update_continental(char* mesaj) {
@@ -162,17 +200,22 @@ public:
         }
         j+=len+1;
       }while(idMasina<8 && j<strlen(mesaj));
-
+/*
       std::cout<<"The Route is :"<<std::endl;
       while(!car_route.empty()){
         std::cout<<std::hex<<(int)car_route.front()<<std::endl;
         car_route.pop();
-      }
+      }*/
+      entry_point=( (int)car_route.front() )& 15;
+      car_route.pop();
       this->speed=40;
       this->direction=1;
       route=true;
+      decode();
     }
   }
+
+
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
