@@ -6,9 +6,14 @@
 #include <ctime>
 
 //Leds
+
 #define BACK_LIGHT_1 15
 
+<<<<<<< HEAD
 //Motors LEFT
+=======
+//Mottors LEFT
+>>>>>>> 27dcb822efcf4622dbec88542fdc61bc6601b577
 #define PWM_1 27
 #define PIN_1_1 28 // Connect to IN 1_1
 #define PIN_1_2 29 // Connect to IN 1_2

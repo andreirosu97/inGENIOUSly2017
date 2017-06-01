@@ -141,48 +141,48 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 }
 
 void CarMotor::SyncronizeState() {
-  while(thread_on) {
-    Directie directie = state->get_motor_state().first; 
-    int speed = state->get_motor_state().second;
-    SetDirection(directie);
+    while(thread_on) {
+        Directie directie = state->get_motor_state().first; 
+        int speed = state->get_motor_state().second;
+        SetDirection(directie);
 
-    if (directie == FORWARD) {
-        TipCorectie correction_mode = GetCorrectionMode();
+        if (directie == FORWARD) {
+            TipCorectie correction_mode = GetCorrectionMode();
 
-        int vitezaStanga = motorState.second;
-        int vitezaDreapta = motorState.second;
-        if (correction_mode == STANGA) {
-            vitezaStanga = 1;
-            vitezaDreapta = std::min(80, motorState.second * 2);
-        } else if (correction_mode == DREAPTA) {
-            vitezaStanga = std::min(80, motorState.second * 2);
-            vitezaDreapta = 1;
-        }
-        SetSpeedLeft(vitezaStanga);
-        SetSpeedRight(vitezaDreapta);
-    } else if (directie == STOP) {
-        SetSpeedLeft(0);
-        SetSpeedRight(0);
-    } else if (directie == BACKWARD) {
-        SetSpeedLeft(-speed);
-        SetSpeedRight(-speed);
-    } else if (directie == LEFT || directie == RIGHT) {
-        SetSpeedLeft(speed);
-        SetSpeedRight(speed);
-        if (is_turning) {
-            clock_t current_time = clock();
-            if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.5) {
-                TipCorectie correction_mode = GetCorrectionMode();
-                if (correction_mode == MIJLOC) {
-                    state->update_motor_direction(FORWARD);
-                    is_turning = false;
+            int vitezaStanga = motorState.second;
+            int vitezaDreapta = motorState.second;
+            if (correction_mode == STANGA) {
+                vitezaStanga = 1;
+                vitezaDreapta = std::min(80, motorState.second * 2);
+            } else if (correction_mode == DREAPTA) {
+                vitezaStanga = std::min(80, motorState.second * 2);
+                vitezaDreapta = 1;
+            }
+                SetSpeedLeft(vitezaStanga);
+                SetSpeedRight(vitezaDreapta);
+            } else if (directie == STOP) {
+                SetSpeedLeft(0);
+                SetSpeedRight(0);
+            } else if (directie == BACKWARD) {
+                SetSpeedLeft(-speed);
+                SetSpeedRight(-speed);
+            } else if (directie == LEFT || directie == RIGHT) {
+                SetSpeedLeft(speed);
+                SetSpeedRight(speed);
+                if (is_turning) {
+                    clock_t current_time = clock();
+                    if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.5) {
+                        TipCorectie correction_mode = GetCorrectionMode();
+                        if (correction_mode == MIJLOC) {
+                            state->update_motor_direction(FORWARD);
+                            is_turning = false;
+                        }
+                    }
+                } else {
+                    turn_time = clock();
+                    is_turning = true;
                 }
             }
-        } else {
-            turn_time = clock();
-            is_turning = true;
-        }
-    }
   }
 }
 
