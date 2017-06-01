@@ -10,30 +10,36 @@
 #include <iostream>
 
 class CarState {
+public:
+  enum Direction {
+    FORWARD = 0,
+    BACKWARD = 1,
+    LEFT = 2,
+    RIGHT = 3,
+    STOP = 4
+  };
+
 private:
   /* ============== STATE PARAMETERS ============== */
+
+  
   bool route = false;
   int speed = 0;
-  int direction = 0;
+  Direction direction;
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
-
+    
   enum STATE {
     STOPPED = 0x01,
     MOVING_IN = 0x02,
     MOVING_OUT = 0x03
   };
 
-  enum TURN{
-    NONE = 0,
-    RIGHT = 1,
-    LEFT = -1
-  };
-
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
-  std::queue <int> car_route_decoded;
+  std::queue <Direction> car_route_decoded;
+  unsigned int last_uid;
 
   /* ============== MUTEXES ============== */
   std::mutex update_state;
@@ -106,28 +112,31 @@ public:
     state[5] = 0x00;
   }
 
-  std::pair<MOTOR_STATE, int> get_motor_state() { // daca nu exista mesaj?
+  std::pair<int, int> get_motor_state() { // daca nu exista mesaj?
     std::lock_guard<std::mutex> guard(update_state);
 
-    std::pair<MOTOR_STATE, int> motor_state;
+    std::pair<Direction, int> motor_state;
 
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
       if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
-        motor_state.first = CarMotor::FORWARD;
+        motor_state.first = FORWARD;
         motor_state.second = speed;
+      } else if  ((current_time - stop_time) / CLOCKS_PER_SEC < 0.3) {
+        motor_state.first = BACKWARD;
+        motor_state.second = speed / 2;
+      
       } else {
-        motor_state = std::make_pair(OPRIT, 0);
+        motor_state = std::make_pair(STOP, 0);
       }
-    }
-    else {
+    }  else {
       motor_state.first = direction;
       motor_state.second = speed;
     }
     return motor_state;
-
+ }
 
   void decode(){
     int mask = 15;
@@ -136,7 +145,7 @@ public:
       next_point = ( (int)car_route.front()) & mask;
       car_route.pop();
       if( next_point%2 == entry_point%2){
-        car_route_decoded.push(NONE);
+        car_route_decoded.push(FORWARD);
       }else if( next_point > entry_point || ( next_point== 0x01 && entry_point== 0x04) ){
         car_route_decoded.push(LEFT);
       }
@@ -153,10 +162,6 @@ public:
       else
         entry_point = 0x03;
     }
-    while(!(car_route_decoded.empty()) ){
-      std::cout<<car_route_decoded.front()<<std::endl;
-      car_route_decoded.pop();
-    }
   }
 /* ============= UPDATE STATES METHODS ============== */
 
@@ -172,8 +177,8 @@ public:
     if (mesaj[0] == 0x02) {
       unsigned char signature[] = {0xAA, 0xBB, 0xCC, 0xDD, 0x00};
       if (strcmp(mesaj + 1, (char*)signature) == 0) {
-        this->direction=0;
-        this->speed=0;
+        this->direction = STOP;
+        this->speed = 0;
         cars_states[8].second = 0x01;
       }
     }
@@ -199,46 +204,26 @@ public:
         }
         j+=len+1;
       }while(idMasina<8 && j<strlen(mesaj));
-<<<<<<< HEAD
-
-      std::cout << "The Route is :" << std::endl;
-      while(!car_route.empty()){
-        std::cout<<std::hex<<(int)car_route.front()<<std::endl;
-        car_route.pop();
-      }
-      this->speed = 40;
-      this->direction = CarMotor::FORWARD;
-      route = true;
-=======
-/*
-      std::cout<<"The Route is :"<<std::endl;
-      while(!car_route.empty()){
-        std::cout<<std::hex<<(int)car_route.front()<<std::endl;
-        car_route.pop();
-      }*/
       entry_point=( (int)car_route.front() )& 15;
       car_route.pop();
-      this->speed=40;
-      this->direction=1;
+      this->speed = 80;
+      this->direction = FORWARD;
       route=true;
       decode();
->>>>>>> 27dcb822efcf4622dbec88542fdc61bc6601b577
     }
   }
-
-
 
   void update_motor_direction(std::string direction) {
     std::lock_guard<std::mutex> guard(update_state);
     if(direction == "SD"){
-        this->direction = this->speed = 0;
+        this->direction = STOP;
         shut_down();
     } else if(direction=="F") {
-        this->direction = CarMotor::FORWARD;
+        this->direction = FORWARD;
     } else if(direction=="B") {
-        this->direction = CarMotor::BACKWARD;
+        this->direction = BACKWARD;
     } else if(direction=="S"){
-        this->direction = CarMotor::STOP;
+        this->direction = STOP;
         this->speed = 0;
     }
 
@@ -248,7 +233,7 @@ public:
       this->speed = speed;
   }
 
-  void update_motor_direction(CarMotor::Direction direction) {
+  void update_motor_direction(Direction direction) {
       this->direction = direction;
   }
 
@@ -266,8 +251,14 @@ public:
       }
     }
 
-    if (!found) {;
-      std::cout << "Eroare RF TAG, tagul " << uid << " nu a fost gasit" << std::endl;
+    if (!found) {
+      if (last_uid != uid) {
+         std::cout << "UID necunoscut, probabil mijloc de intersectie!\n";
+         this->direction = car_route_decoded.front();
+         std::cout << "Directia " << this->direction << "\n";
+         car_route_decoded.pop();
+         last_uid = uid;
+      }
     } else {
       update_state_rf_found(i_map[poz][1]);
       cars_states[8].first = i_map[poz][1];

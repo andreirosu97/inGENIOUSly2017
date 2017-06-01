@@ -105,19 +105,24 @@ void CarMotor::SetDirection(Direction direction) {
         digitalWrite(BACK_LIGHT_1, LOW);
         SetDirectionLeft(FORWARD);
         SetDirectionRight(FORWARD);
+        //std::cout << "FORWARD\n";
     } else if(direction == BACKWARD) {
         digitalWrite(BACK_LIGHT_1, LOW);
         SetDirectionLeft(BACKWARD);
         SetDirectionRight(BACKWARD);
+        //std::cout << "BACKWARD\n";
     } else if(direction == STOP) {
         SetDirectionLeft(STOP);
         SetDirectionRight(STOP);
+        std::cout << "STOP\n";
     } else if(direction == LEFT) {
         SetDirectionLeft(BACKWARD);
         SetDirectionRight(FORWARD);
+        //std::cout << "LEFT\n";
     } else if (direction == RIGHT) {
         SetDirectionLeft(FORWARD);
         SetDirectionRight(BACKWARD);
+        //std::cout << "RIGHT\n";
     }
 }
 
@@ -130,7 +135,7 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   const int NEGRU = 1;
   const int ALB = 0;
 
-  if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU) {
+  if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU)
     return MIJLOC;
   if (valDreapta == ALB && valStanga == NEGRU)
     return DREAPTA;
@@ -142,47 +147,48 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 
 void CarMotor::SyncronizeState() {
     while(thread_on) {
-        Directie directie = state->get_motor_state().first; 
+        Direction directie = (Direction)state->get_motor_state().first; 
         int speed = state->get_motor_state().second;
         SetDirection(directie);
 
         if (directie == FORWARD) {
             TipCorectie correction_mode = GetCorrectionMode();
 
-            int vitezaStanga = motorState.second;
-            int vitezaDreapta = motorState.second;
+            int vitezaStanga = speed;
+            int vitezaDreapta = speed;
             if (correction_mode == STANGA) {
                 vitezaStanga = 1;
-                vitezaDreapta = std::min(80, motorState.second * 2);
+                vitezaDreapta = std::min(80, speed);
             } else if (correction_mode == DREAPTA) {
-                vitezaStanga = std::min(80, motorState.second * 2);
+                vitezaStanga = std::min(80, speed);
                 vitezaDreapta = 1;
             }
-                SetSpeedLeft(vitezaStanga);
-                SetSpeedRight(vitezaDreapta);
-            } else if (directie == STOP) {
-                SetSpeedLeft(0);
-                SetSpeedRight(0);
-            } else if (directie == BACKWARD) {
-                SetSpeedLeft(-speed);
-                SetSpeedRight(-speed);
-            } else if (directie == LEFT || directie == RIGHT) {
-                SetSpeedLeft(speed);
-                SetSpeedRight(speed);
-                if (is_turning) {
-                    clock_t current_time = clock();
-                    if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.5) {
-                        TipCorectie correction_mode = GetCorrectionMode();
-                        if (correction_mode == MIJLOC) {
-                            state->update_motor_direction(FORWARD);
-                            is_turning = false;
-                        }
+            SetSpeedLeft(vitezaStanga);
+            SetSpeedRight(vitezaDreapta);
+        } else if (directie == STOP) {
+            SetSpeedLeft(0);
+            SetSpeedRight(0);
+        } else if (directie == BACKWARD) {
+            SetSpeedLeft(-speed);
+            SetSpeedRight(-speed);
+        } else if (directie == LEFT || directie == RIGHT) {
+            speed = 100;
+            SetSpeedLeft(speed);
+            SetSpeedRight(speed);
+            if (is_turning) {
+                clock_t current_time = clock();
+                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.1) {
+                    TipCorectie correction_mode = GetCorrectionMode();
+                    if (correction_mode == MIJLOC) {
+                        state->update_motor_direction(CarState::FORWARD);
+                        is_turning = false;
                     }
-                } else {
-                    turn_time = clock();
-                    is_turning = true;
                 }
+            } else {
+                turn_time = clock();
+                is_turning = true;
             }
+        }
   }
 }
 

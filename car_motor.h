@@ -9,11 +9,8 @@
 
 #define BACK_LIGHT_1 15
 
-<<<<<<< HEAD
 //Motors LEFT
-=======
-//Mottors LEFT
->>>>>>> 27dcb822efcf4622dbec88542fdc61bc6601b577
+
 #define PWM_1 27
 #define PIN_1_1 28 // Connect to IN 1_1
 #define PIN_1_2 29 // Connect to IN 1_2
@@ -37,6 +34,14 @@ const int PIN_FOLLOW_MIJLOC = 1;
 const int PIN_FOLLOW_DREAPTA = 2;
 
 class CarMotor {
+public:    
+    enum Direction {
+        FORWARD = 0,
+        BACKWARD = 1,
+        LEFT = 2,
+        RIGHT = 3,
+        STOP = 4
+    };
 private:
     enum TipCorectie {
         STANGA,
@@ -44,22 +49,16 @@ private:
         MIJLOC,
         UNKNOWN 
     };
-
-    enum Directie {
-        STOP,
-        LEFT,
-        RIGHT,
-        FORWARD,
-        BACKWARD
-    }
-    
+        
     bool is_turning = 0;
     clock_t turn_time;
 
     CarState* state;
     std::unique_ptr<std::thread> motor_thread;
     void SyncronizeState();
-    void SetDirection (int direction);
+    void SetDirection (Direction direction);
+    void SetDirectionLeft (Direction direction);
+    void SetDirectionRight (Direction direction);
     void SetSpeedLeft(int speed);
     void SetSpeedRight(int speed);
 
@@ -68,6 +67,8 @@ private:
     int thread_on = 1;
 
   public:
+   
+
     CarMotor(CarState* state);
     ~CarMotor();
     void Start();
