@@ -7,7 +7,7 @@
 
 void CarMotor::Start() {
   if(wiringPiSetup() < 0) {
-    std::cout << "Nu a mers wiringPiSetupul";
+    std::cout << "Nu a mers wiringPiSetupul"<<std::endl;
     state->shut_down();
   }
   pinMode(BACK_LIGHT, OUTPUT);

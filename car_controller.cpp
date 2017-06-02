@@ -29,7 +29,10 @@ void CarController::Start() {
   connection->Connect();
   connection->Start();
 
-  while(!state->start_car() ); //Sleep till the map was recieved
+  while(!state->start_car() )//Sleep till the map was recieved
+    if (signal_shutdown) {
+      state->shut_down();
+
   std::cout<<"Car Start moving!"<<std::endl;
 
   motor->Start();
@@ -46,6 +49,6 @@ void CarController::Start() {
 
     //state->get_state();
 
-    usleep(500000);
+    usleep(50000);
   }
 }
