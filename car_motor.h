@@ -7,7 +7,9 @@
 
 //Leds
 
-#define BACK_LIGHT_1 15
+#define BACK_LIGHT 15
+#define RIGHT_YELLOW_LIGHT 16
+#define LEFT_YELLOW_LIGHT 11
 
 //Motors LEFT
 
@@ -34,7 +36,7 @@ const int PIN_FOLLOW_MIJLOC = 1;
 const int PIN_FOLLOW_DREAPTA = 2;
 
 class CarMotor {
-public:    
+public:
     enum Direction {
         FORWARD = 0,
         BACKWARD = 1,
@@ -47,11 +49,14 @@ private:
         STANGA,
         DREAPTA,
         MIJLOC,
-        UNKNOWN 
+        UNKNOWN
     };
-        
+
     bool is_turning = 0;
     clock_t turn_time;
+    clock_t last_blink;
+    bool blink_left=false;
+    bool blink_right=false;
 
     CarState* state;
     std::unique_ptr<std::thread> motor_thread;
@@ -67,7 +72,7 @@ private:
     int thread_on = 1;
 
   public:
-   
+
 
     CarMotor(CarState* state);
     ~CarMotor();
