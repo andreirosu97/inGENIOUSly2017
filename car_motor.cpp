@@ -114,7 +114,7 @@ void CarMotor::SetDirection(Direction direction) {
     } else if(direction == STOP) {
         SetDirectionLeft(STOP);
         SetDirectionRight(STOP);
-        std::cout << "STOP\n";
+        //std::cout << "STOP\n";
     } else if(direction == LEFT) {
         SetDirectionLeft(BACKWARD);
         SetDirectionRight(FORWARD);
@@ -147,7 +147,7 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 
 void CarMotor::SyncronizeState() {
     while(thread_on) {
-        Direction directie = (Direction)state->get_motor_state().first; 
+        Direction directie = (Direction)state->get_motor_state().first;
         int speed = state->get_motor_state().second;
         SetDirection(directie);
 
@@ -172,7 +172,6 @@ void CarMotor::SyncronizeState() {
             SetSpeedLeft(-speed);
             SetSpeedRight(-speed);
         } else if (directie == LEFT || directie == RIGHT) {
-            speed = 100;
             SetSpeedLeft(speed);
             SetSpeedRight(speed);
             if (is_turning) {

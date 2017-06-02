@@ -22,13 +22,13 @@ public:
 private:
   /* ============== STATE PARAMETERS ============== */
 
-  
+
   bool route = false;
   int speed = 0;
   Direction direction;
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
-    
+
   enum STATE {
     STOPPED = 0x01,
     MOVING_IN = 0x02,
@@ -76,6 +76,11 @@ public:
   /* ============== Constructor and Destructor ============== */
   CarState() {
     cars_states.resize(9);
+    int i;
+    for(i = 1; i <= 7; i++){
+      cars_states[i].first = 0x01;
+      cars_states[i].second = 0x01;
+    }
     cars_states[8].first = 0x01;
     cars_states[8].second = 0x03;
   }
@@ -83,6 +88,20 @@ public:
   ~CarState() {std::cout << "CLOSING STATE!" << std::endl;}
 
   /* ============== STATE QUERY METHODS ============== */
+  bool clear_to_pass(char my_position){// my_position == pozitie in intersectie in care am intrat cu statea STOPED
+    int i;
+    int mask_58=(15<<4); // mask for the A in 0xAB
+    int mask_14= 15; // mask for the B in 0xAB
+    for(i = 1; i <= 7; i++ )
+      if( mask_58 & my_position == mask_58 & cars_states[i].first){//Suntem intr-o intersectie cu alta masina
+        if( cars_states[i].second == 0x02 )// If the car is MOVING IN we wait more
+          return false;
+        else if( mask_14 & cars_states[i].first < mask_14 & my_position || ( mask_14 & cars_states[i].first == 0x04 &&  mask_14 & my_position == 0x01))
+          return false;
+      }
+    return true;
+  }
+
 
   void get_state(){
     std::cout<<"Speed: " << std::dec << this->speed << std::endl;
@@ -119,15 +138,15 @@ public:
 
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
-      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0) {
+      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0 && clear_to_pass(cars_states[8].first) ) {
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
         motor_state.first = FORWARD;
-        motor_state.second = speed;
+        motor_state.second = 100;
       } else if  ((current_time - stop_time) / CLOCKS_PER_SEC < 0.3) {
         motor_state.first = BACKWARD;
         motor_state.second = speed / 2;
-      
+
       } else {
         motor_state = std::make_pair(STOP, 0);
       }
@@ -259,7 +278,7 @@ public:
          car_route_decoded.pop();
          last_uid = uid;
       }
-    } else {
+    } else if(cars_states[8].first != i_map[poz][1]){
       update_state_rf_found(i_map[poz][1]);
       cars_states[8].first = i_map[poz][1];
     }
@@ -271,12 +290,13 @@ public:
       shut_down();
     }*/
 
-    if (cars_states[8].second == MOVING_OUT && tag_id != cars_states[8].first) {
+    if (cars_states[8].second == MOVING_OUT) {
       cars_states[8].second = STOPPED;
       std::cout<<"STOPPED"<<std::endl;
       stop_time = clock();
-    } else if (cars_states[8].second == MOVING_IN && tag_id != cars_states[8].first) {
+    } else if (cars_states[8].second == MOVING_IN) {
       cars_states[8].second = MOVING_OUT;
+      this->speed = 80;
       std::cout << "MOVING OUT!" << std::endl;
     }
   }
