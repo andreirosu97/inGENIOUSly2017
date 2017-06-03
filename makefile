@@ -1,6 +1,6 @@
 all: car_client.o car_server.o car_controller.o car_connection.o car_motor.o car_rf.o rc522.o main.o
 	g++ -std=c++11 -lwiringPi -pthread car_client.o car_server.o car_controller.o car_connection.o car_motor.o car_rf.o rc522.o main.o -o programel
-car_client.o: car_client.cpp car_client.h
+car_client.o: car_client.cpp car_client.h car_state.h
 	g++ -std=c++11 -I . -c car_client.cpp
 car_server.o: car_server.cpp car_server.h
 	g++ -std=c++11 -I . -c car_server.cpp

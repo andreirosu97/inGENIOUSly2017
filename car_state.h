@@ -140,15 +140,14 @@ public:
       clock_t current_time = clock();
       if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0 ){//&& clear_to_pass(cars_states[8].first) ) {
         cars_states[8].second = MOVING_IN;
-        std::cout << "MOVING IN" << std::endl;
-        motor_state.first = FORWARD;
-        motor_state.second = 100;
+        //std::cout << "MOVING IN" << std::endl;
+        this->speed = 100;
+        motor_state = std::make_pair(FORWARD, speed);
       } else{
-        motor_state = std::make_pair(STOP, 0);
+        motor_state = std::make_pair(STOP, speed);
       }
-    }  else {
-      motor_state.first = direction;
-      motor_state.second = speed;
+    } else {
+      motor_state = std::make_pair(direction, speed);
     }
     return motor_state;
  }
@@ -288,12 +287,13 @@ public:
 
     if (cars_states[8].second == MOVING_OUT) {
       cars_states[8].second = STOPPED;
-      std::cout<<"STOPPED"<<std::endl;
+      //std::cout<<"STOPPED"<<std::endl;
+      this->speed=0;
       stop_time = clock();
     } else if (cars_states[8].second == MOVING_IN) {
       cars_states[8].second = MOVING_OUT;
       this->speed = 60;
-      std::cout << "MOVING OUT!" << std::endl;
+      //std::cout << "MOVING OUT!" << std::endl;
     }
   }
 
