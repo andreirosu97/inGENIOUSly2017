@@ -150,8 +150,9 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 
 void CarMotor::SyncronizeState() {
     while(thread_on) {
-        Direction directie = (Direction)state->get_motor_state().first;
-        int speed = state->get_motor_state().second;
+        std::pair<int, int> m_state = state->get_motor_state();
+        Direction directie = (Direction)m_state.first;
+        int speed = m_state.second;
         SetDirection(directie);
 
         if (directie == FORWARD) {
@@ -172,8 +173,8 @@ void CarMotor::SyncronizeState() {
             SetSpeedLeft(0);
             SetSpeedRight(0);
         } else if (directie == BACKWARD) {
-            SetSpeedLeft(-speed);
-            SetSpeedRight(-speed);
+            SetSpeedLeft(speed);
+            SetSpeedRight(speed);
         } else if (directie == LEFT || directie == RIGHT) {
             SetSpeedLeft(speed);
             SetSpeedRight(speed);
@@ -196,9 +197,10 @@ void CarMotor::SyncronizeState() {
                     }
                 }
                 /* ======= END of Blinking ====== */
-                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.2) {
+                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.001) {
+                  //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
-                    if (correction_mode == MIJLOC) {
+                    if (correction_mode != UNKNOWN ) {
                         state->update_motor_direction(CarState::FORWARD);
                         is_turning = false;
                         /* Resetting blinkers*/
@@ -221,7 +223,6 @@ void CarMotor::SyncronizeState() {
 CarMotor::~CarMotor() {
   thread_on = 0;
   motor_thread->join();
-  blinker_thread->join();
 
   digitalWrite(BACK_LIGHT, LOW);
   softPwmWrite(PWM_1, 0);

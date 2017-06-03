@@ -29,9 +29,7 @@ void CarController::Start() {
   connection->Connect();
   connection->Start();
 
-  while(!state->start_car() )//Sleep till the map was recieved
-    if (signal_shutdown)
-      state->shut_down();
+  while(!state->start_car() && !signal_shutdown);//Sleep till the map was recieved
 
   std::cout<<"Car Start moving!"<<std::endl;
 

@@ -138,16 +138,12 @@ public:
 
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
-      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0 && clear_to_pass(cars_states[8].first) ) {
+      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 3.0 ){//&& clear_to_pass(cars_states[8].first) ) {
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
         motor_state.first = FORWARD;
         motor_state.second = 100;
-      } else if  ((current_time - stop_time) / CLOCKS_PER_SEC < 0.3) {
-        motor_state.first = BACKWARD;
-        motor_state.second = speed / 2;
-
-      } else {
+      } else{
         motor_state = std::make_pair(STOP, 0);
       }
     }  else {
@@ -213,11 +209,11 @@ public:
         }
 
         idMasina = (int)mesaj[j++];
-        std::cout<<"IdMasina"<<std::hex<<idMasina<<std::endl;
+        //std::cout<<"IdMasina"<<std::hex<<idMasina<<std::endl;
         car_type=mesaj[j++];
-        std::cout<<"Tip masina:"<<std::hex<<(int)car_type<<std::endl;
+        //std::cout<<"Tip masina:"<<std::hex<<(int)car_type<<std::endl;
         len=(int)mesaj[j];
-        std::cout<<std::dec<<"Lungime:"<<len<<std::endl<<std::endl;
+        //std::cout<<std::dec<<"Lungime:"<<len<<std::endl<<std::endl;
         for(i=1; i<=len; i++){
           car_route.push(mesaj[i+j]);
         }
@@ -225,7 +221,7 @@ public:
       }while(idMasina<8 && j<strlen(mesaj));
       entry_point=( (int)car_route.front() )& 15;
       car_route.pop();
-      this->speed = 80;
+      this->speed = 60;
       this->direction = FORWARD;
       route=true;
       decode();
@@ -272,9 +268,9 @@ public:
 
     if (!found) {
       if (last_uid != uid) {
-         std::cout << "UID necunoscut, probabil mijloc de intersectie!\n";
+         //std::cout << "UID necunoscut, probabil mijloc de intersectie!\n";
          this->direction = car_route_decoded.front();
-         std::cout << "Directia " << this->direction << "\n";
+         //std::cout << "Directia " << this->direction << "\n";
          car_route_decoded.pop();
          last_uid = uid;
       }
@@ -296,7 +292,7 @@ public:
       stop_time = clock();
     } else if (cars_states[8].second == MOVING_IN) {
       cars_states[8].second = MOVING_OUT;
-      this->speed = 80;
+      this->speed = 60;
       std::cout << "MOVING OUT!" << std::endl;
     }
   }
