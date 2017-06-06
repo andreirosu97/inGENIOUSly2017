@@ -7,10 +7,10 @@
 
 void CarMotor::Start() {
   if(wiringPiSetup() < 0) {
-    std::cout << "Nu a mers wiringPiSetupul";
+    std::cout << "Nu a mers wiringPiSetupul"<<std::endl;
     state->shut_down();
   }
-  pinMode(BACK_LIGHT_1, OUTPUT);
+  pinMode(BACK_LIGHT, OUTPUT);
 
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
@@ -46,18 +46,18 @@ CarMotor::CarMotor(CarState* state) {
 
 void CarMotor::SetSpeedLeft(int speed) {
   if(speed==0)
-    digitalWrite(BACK_LIGHT_1, HIGH);
+    digitalWrite(BACK_LIGHT, HIGH);
   else
-    digitalWrite(BACK_LIGHT_1, LOW);
+    digitalWrite(BACK_LIGHT, LOW);
   softPwmWrite(PWM_1, speed);
   softPwmWrite(PWM_2, speed);
 }
 
 void CarMotor::SetSpeedRight(int speed) {
   if(speed==0)
-    digitalWrite(BACK_LIGHT_1, HIGH);
+    digitalWrite(BACK_LIGHT, HIGH);
   else
-    digitalWrite(BACK_LIGHT_1, LOW);
+    digitalWrite(BACK_LIGHT, LOW);
   softPwmWrite(PWM_3, speed);
   softPwmWrite(PWM_4, speed);
 }
@@ -102,24 +102,27 @@ void CarMotor::SetDirectionRight(Direction direction) {
 
 void CarMotor::SetDirection(Direction direction) {
     if (direction == FORWARD) {
-        digitalWrite(BACK_LIGHT_1, LOW);
+        digitalWrite(BACK_LIGHT, LOW);
         SetDirectionLeft(FORWARD);
         SetDirectionRight(FORWARD);
         //std::cout << "FORWARD\n";
     } else if(direction == BACKWARD) {
-        digitalWrite(BACK_LIGHT_1, LOW);
+        digitalWrite(BACK_LIGHT, LOW);
         SetDirectionLeft(BACKWARD);
         SetDirectionRight(BACKWARD);
         //std::cout << "BACKWARD\n";
     } else if(direction == STOP) {
+        digitalWrite(BACK_LIGHT, HIGH);
         SetDirectionLeft(STOP);
         SetDirectionRight(STOP);
-        std::cout << "STOP\n";
+        //std::cout << "STOP\n";
     } else if(direction == LEFT) {
+        digitalWrite(BACK_LIGHT, LOW);
         SetDirectionLeft(BACKWARD);
         SetDirectionRight(FORWARD);
         //std::cout << "LEFT\n";
     } else if (direction == RIGHT) {
+        digitalWrite(BACK_LIGHT, LOW);
         SetDirectionLeft(FORWARD);
         SetDirectionRight(BACKWARD);
         //std::cout << "RIGHT\n";
@@ -147,8 +150,9 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 
 void CarMotor::SyncronizeState() {
     while(thread_on) {
-        Direction directie = (Direction)state->get_motor_state().first; 
-        int speed = state->get_motor_state().second;
+        std::pair<int, int> m_state = state->get_motor_state();
+        Direction directie = (Direction)m_state.first;
+        int speed = m_state.second;
         SetDirection(directie);
 
         if (directie == FORWARD) {
@@ -169,23 +173,47 @@ void CarMotor::SyncronizeState() {
             SetSpeedLeft(0);
             SetSpeedRight(0);
         } else if (directie == BACKWARD) {
-            SetSpeedLeft(-speed);
-            SetSpeedRight(-speed);
+            SetSpeedLeft(speed);
+            SetSpeedRight(speed);
         } else if (directie == LEFT || directie == RIGHT) {
-            speed = 100;
             SetSpeedLeft(speed);
             SetSpeedRight(speed);
             if (is_turning) {
                 clock_t current_time = clock();
-                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.1) {
+                /* ====== Blinking section ===== */
+                clock_t diff= (current_time - last_blink) / CLOCKS_PER_SEC;
+                if(directie == LEFT){
+                  digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
+                  if( diff > 0.3){
+                      digitalWrite(LEFT_YELLOW_LIGHT, !blink_left);
+                      last_blink = current_time;
+                    }
+                  }
+                else{
+                  digitalWrite(LEFT_YELLOW_LIGHT, LOW);
+                  if( diff > 0.3){
+                      digitalWrite(RIGHT_YELLOW_LIGHT, !blink_right);
+                      last_blink = current_time;
+                    }
+                }
+                /* ======= END of Blinking ====== */
+                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.001) {
+                  //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
-                    if (correction_mode == MIJLOC) {
+                    if (correction_mode != UNKNOWN ) {
                         state->update_motor_direction(CarState::FORWARD);
                         is_turning = false;
+                        /* Resetting blinkers*/
+                        blink_right = false;
+                        blink_left = false;
+                        digitalWrite(LEFT_YELLOW_LIGHT, blink_left);
+                        digitalWrite(RIGHT_YELLOW_LIGHT, blink_right);
+                        /* End of resetting blinkers*/
                     }
                 }
             } else {
                 turn_time = clock();
+                last_blink = turn_time;
                 is_turning = true;
             }
         }
@@ -196,7 +224,7 @@ CarMotor::~CarMotor() {
   thread_on = 0;
   motor_thread->join();
 
-  digitalWrite(BACK_LIGHT_1, LOW);
+  digitalWrite(BACK_LIGHT, LOW);
   softPwmWrite(PWM_1, 0);
   softPwmWrite(PWM_2, 0);
   softPwmWrite(PWM_3, 0);
