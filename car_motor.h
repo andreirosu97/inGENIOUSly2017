@@ -55,8 +55,7 @@ private:
     bool is_turning = 0;
     clock_t turn_time;
     clock_t last_blink;
-    bool blink_left=false;
-    bool blink_right=false;
+    bool blink_led_on=false;
 
     CarState* state;
     std::unique_ptr<std::thread> motor_thread;
@@ -66,6 +65,8 @@ private:
     void SetDirectionRight (Direction direction);
     void SetSpeedLeft(int speed);
     void SetSpeedRight(int speed);
+    void BlinkIfNecessary(clock_t current_time, Direction direction);
+    void ResetBlinks();
 
     TipCorectie GetCorrectionMode();
 

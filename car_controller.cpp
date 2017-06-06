@@ -46,7 +46,5 @@ void CarController::Start() {
     }
 
     //state->get_state();
-
-    usleep(50000);
   }
 }

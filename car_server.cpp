@@ -28,11 +28,14 @@ void CarServer::SendMessage(char* message) {
 
 void CarServer::SyncronizeState(){
   struct sockaddr_in s;
+  clock_t last_time = clock();
   while(thread_on){
-    unsigned char telegrama[6];
-    state->get_my_state(telegrama);
-    SendMessage((char*)telegrama);
-
-    usleep(100000);
+    clock_t current_time = clock();
+    if ((current_time - last_time) / CLOCKS_PER_SEC > 0.1) {
+        unsigned char telegrama[6];
+        state->get_my_state(telegrama);
+        SendMessage((char*)telegrama);
+        last_time = current_time;
+    }
   }
 }

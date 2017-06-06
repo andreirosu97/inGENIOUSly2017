@@ -11,6 +11,8 @@ void CarMotor::Start() {
     state->shut_down();
   }
   pinMode(BACK_LIGHT, OUTPUT);
+  pinMode(RIGHT_YELLOW_LIGHT, OUTPUT);
+  pinMode(LEFT_YELLOW_LIGHT, OUTPUT);
 
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
@@ -148,6 +150,32 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   return UNKNOWN;
 }
 
+void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
+    clock_t diff = (current_time - last_blink) / CLOCKS_PER_SEC;
+    if(directie == LEFT){
+      digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
+      if(diff > 0.3){
+          digitalWrite(LEFT_YELLOW_LIGHT, !blink_led_on);
+          last_blink = current_time;
+          blink_led_on = !blink_led_on;
+        }
+      }
+    else{
+      digitalWrite(LEFT_YELLOW_LIGHT, LOW);
+      if(diff > 0.3){
+          digitalWrite(RIGHT_YELLOW_LIGHT, !blink_led_on);
+          last_blink = current_time;
+          blink_led_on = !blink_led_on;
+        }
+    }
+}
+
+void CarMotor::ResetBlinks() {
+    blink_led_on = false;
+    digitalWrite(LEFT_YELLOW_LIGHT, blink_led_on);
+    digitalWrite(RIGHT_YELLOW_LIGHT, blink_led_on);
+}
+
 void CarMotor::SyncronizeState() {
     while(thread_on) {
         std::pair<int, int> m_state = state->get_motor_state();
@@ -162,10 +190,10 @@ void CarMotor::SyncronizeState() {
             int vitezaDreapta = speed;
             if (correction_mode == STANGA) {
                 vitezaStanga = 1;
-                vitezaDreapta = std::min(80, speed);
+                vitezaDreapta = std::min(100, speed * 2);
             } else if (correction_mode == DREAPTA) {
-                vitezaStanga = std::min(80, speed);
-                vitezaDreapta = 1;
+                vitezaStanga = std::min(100, speed * 2);
+                vitezaDreapta = 1; 
             }
             SetSpeedLeft(vitezaStanga);
             SetSpeedRight(vitezaDreapta);
@@ -180,35 +208,14 @@ void CarMotor::SyncronizeState() {
             SetSpeedRight(speed);
             if (is_turning) {
                 clock_t current_time = clock();
-                /* ====== Blinking section ===== */
-                clock_t diff= (current_time - last_blink) / CLOCKS_PER_SEC;
-                if(directie == LEFT){
-                  digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
-                  if( diff > 0.3){
-                      digitalWrite(LEFT_YELLOW_LIGHT, !blink_left);
-                      last_blink = current_time;
-                    }
-                  }
-                else{
-                  digitalWrite(LEFT_YELLOW_LIGHT, LOW);
-                  if( diff > 0.3){
-                      digitalWrite(RIGHT_YELLOW_LIGHT, !blink_right);
-                      last_blink = current_time;
-                    }
-                }
-                /* ======= END of Blinking ====== */
-                if ((current_time - turn_time) / CLOCKS_PER_SEC > 0.001) {
-                  //std::cout<<"Started checking"<<std::endl;
+                BlinkIfNecessary(current_time, directie);
+                if ((current_time - turn_time) / CLOCKS_PER_SEC > 1.2) {
+                    //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
-                    if (correction_mode != UNKNOWN ) {
+                    if (correction_mode != UNKNOWN) {
                         state->update_motor_direction(CarState::FORWARD);
                         is_turning = false;
-                        /* Resetting blinkers*/
-                        blink_right = false;
-                        blink_left = false;
-                        digitalWrite(LEFT_YELLOW_LIGHT, blink_left);
-                        digitalWrite(RIGHT_YELLOW_LIGHT, blink_right);
-                        /* End of resetting blinkers*/
+                        ResetBlinks();    
                     }
                 }
             } else {
