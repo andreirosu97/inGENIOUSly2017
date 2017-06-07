@@ -49,8 +49,8 @@ private:
   unsigned int last_rf_tag = 0x01;
   unsigned int entry_point = 0x01;
 
-  const int nr_i_map = 20;
-  unsigned int i_map[20][2] = {
+  const int nr_i_map = 22;
+  unsigned int i_map[22][2] = {
     {0xa0b8557e, 0x11},
     {0xc0fc187c, 0x12},
     {0xc0d9857c, 0x13},
@@ -70,7 +70,9 @@ private:
     {0x9cf0bf88, 0xfd},//Card personal
     {0x2b5063d0, 0xff},
     {0x2b5a64d0, 0xff},
-    {0xd0524600, 0xff}
+    {0xd0524600, 0xff},
+    {0x6b3364d0, 0xff},
+    {0xdb3e64d0, 0xff}
   };
 
 public:
