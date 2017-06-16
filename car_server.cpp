@@ -31,7 +31,7 @@ void CarServer::SyncronizeState(){
   clock_t last_time = clock();
   while(thread_on){
     clock_t current_time = clock();
-    if ((current_time - last_time) / CLOCKS_PER_SEC > 0.1) {
+    if ((float)(current_time - last_time) / CLOCKS_PER_SEC > 0.01) {
         unsigned char telegrama[6];
         state->get_my_state(telegrama);
         SendMessage((char*)telegrama);

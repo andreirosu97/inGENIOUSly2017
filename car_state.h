@@ -141,12 +141,12 @@ public:
     std::pair<Direction, int> motor_state;
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
-      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 4.0 ){ //&& clear_to_pass(cars_states[8].first) ) {
+      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 6.0 ){ //&& clear_to_pass(cars_states[8].first) ) {
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
         this->direction = FORWARD;
-        this->speed = 70;
-      } 
+        this->speed = 60;
+      }
     }
     motor_state = std::make_pair(direction, speed);
     return motor_state;
@@ -193,7 +193,7 @@ public:
       if (strcmp(mesaj + 1, (char*)signature) == 0) {
         this->direction = STOP;
         this->speed = 0;
-        cars_states[8].second = 0x01;
+        cars_states[8].second = STOPPED;
       }
     }
 
@@ -220,7 +220,7 @@ public:
       } while(idMasina<8 && j<strlen(mesaj));
       entry_point=( (int)car_route.front() )& 15;
       car_route.pop();
-      this->speed = 50;
+      this->speed = 40;
       this->direction = FORWARD;
       route=true;
       decode();
@@ -277,8 +277,8 @@ public:
     } else if(cars_states[8].first != i_map[poz][1]){
         update_state_rf_found(i_map[poz][1]);
         cars_states[8].first = i_map[poz][1];
+        std::cout<<std::hex<<(int)cars_states[8].first<<std::endl;
         if (car_route_decoded.empty()) {
-            sleep(1);
             shut_down();
         }
     }
@@ -297,7 +297,7 @@ public:
       stop_time = clock();
     } else if (cars_states[8].second == MOVING_IN) {
       cars_states[8].second = MOVING_OUT;
-      this->speed = 50;
+      this->speed = 40;
       //std::cout << "MOVING OUT!" << std::endl;
     }
   }
