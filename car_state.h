@@ -23,7 +23,7 @@ public:
     STOPPED = 0x01,
     MOVING_IN = 0x02,
     MOVING_OUT = 0x03,
-    WAITING = 0x04;
+    WAITING = 0x04
   };
 
 
