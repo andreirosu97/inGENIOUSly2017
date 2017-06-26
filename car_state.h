@@ -145,7 +145,7 @@ public:
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
         this->direction = FORWARD;
-        this->speed = 70;
+        this->speed = 80;
       } 
     }
     motor_state = std::make_pair(direction, speed);
