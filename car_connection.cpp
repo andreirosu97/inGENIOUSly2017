@@ -41,7 +41,6 @@ void CarConnection::Start(){
   server = std::unique_ptr<CarServer>(new CarServer(state, fd_socket, serverAddress.second));
 
   client->Start();
-  while(!state->start_car());
   server->Start();
 }
 

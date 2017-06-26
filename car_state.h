@@ -18,12 +18,12 @@ public:
     RIGHT = 3,
     STOP = 4
   };
-  
+
   enum STATE {
     STOPPED = 0x01,
     MOVING_IN = 0x02,
     MOVING_OUT = 0x03,
-    WAITING = 0x04;
+    WAITING = 0x04
   };
 
 
@@ -37,7 +37,7 @@ private:
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
 
-  
+
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
@@ -120,8 +120,8 @@ public:
     return this->shutdown;
   }
 
-  STATE get_car_state() {
-    return car_state[8].second;
+  char get_car_state() {
+    return cars_states[8].second;
   }
 
   void shut_down() {
@@ -206,6 +206,7 @@ public:
     if (mesaj[0] == 0x03 && get_car_state() == WAITING) {
       int i,j=1,len=0;
       int idMasina=0;
+      std::cout << "CarMessage" << std::endl;
       do {
 
         if(!car_route.empty()) {
