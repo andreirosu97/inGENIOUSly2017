@@ -51,22 +51,22 @@ private:
 
   const int nr_i_map = 22;
   unsigned int i_map[22][2] = {
-    {0xa0b8557e, 0x11},
-    {0xc0fc187c, 0x12},
+    {0x2066fb79, 0x11},
     {0xc0d9857c, 0x13},
-    {0x9dcf92ab, 0x14},
-    {0x804bfb79, 0x21},
-    {0xb0f4157c, 0x22},
-    {0x70d08a7c, 0x23},
-    {0xb0de0d7c, 0x24},
+    {0x70d08a7c, 0x14},
+    {0xb0f4157c, 0x21},
+    {0xb0de0d7c, 0x22},
+    {0x804bfb79, 0x23},
+    {0xc0ce1b7c, 0x24},
     {0xe0d9817c, 0x31},
-    {0x00f28d7c, 0x32},
-    {0x7012897c, 0x33},
-    {0x2066fb79, 0x41},
-    {0x2057187c, 0x42},
-    {0x2035887c, 0x43},
-    {0xa0388d7c, 0x54},
-    {0xc0ce1b7c, 0x64},
+    {0x2035887c, 0x32},
+    {0x9dcf92ab, 0x33},
+    {0x2057187c, 0x34},
+    {0xa0b8557e, 0x41},
+    {0xa0388d7c, 0x42},
+    {0xc0fc187c, 0x43},
+    {0x7012897c, 0x54},
+    {0x00f28d7c, 0x62},
     {0x9cf0bf88, 0xfd},//Card personal
     {0x2b5063d0, 0xff},
     {0x2b5a64d0, 0xff},
@@ -141,7 +141,7 @@ public:
     std::pair<Direction, int> motor_state;
     if (cars_states[8].second == STOPPED) {
       clock_t current_time = clock();
-      if ((current_time - stop_time) / CLOCKS_PER_SEC >= 6.0 ){ //&& clear_to_pass(cars_states[8].first) ) {
+      if ((float)(current_time - stop_time) / CLOCKS_PER_SEC >= 6.0 ){ //&& clear_to_pass(cars_states[8].first) ) {
         cars_states[8].second = MOVING_IN;
         std::cout << "MOVING IN" << std::endl;
         this->direction = FORWARD;

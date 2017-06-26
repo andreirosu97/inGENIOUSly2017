@@ -136,7 +136,7 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valStanga = digitalRead(PIN_FOLLOW_STANGA);
   int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
   int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
-  //std::cout<<valStanga<<" "<<valMijloc<<" "<<valDreapta<<std::endl;
+  std::cout<<valStanga<<" "<<valMijloc<<" "<<valDreapta<<std::endl;
   const int NEGRU = 1;
   const int ALB = 0;
 
@@ -208,7 +208,7 @@ void CarMotor::SyncronizeState() {
             if (is_turning) {
                 clock_t current_time = clock();
                 BlinkIfNecessary(current_time, directie);
-                if ((current_time - turn_time) / CLOCKS_PER_SEC > 1) {
+                if ((float)(current_time - turn_time) / CLOCKS_PER_SEC > 1) {
                     //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
                     if (correction_mode != UNKNOWN) {
