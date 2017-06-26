@@ -29,9 +29,7 @@ void CarController::Start() {
   connection->Connect();
   connection->Start();
 
-  while(!state->start_car() && !signal_shutdown);//Sleep till the map was recieved
-
-  std::cout<<"Car Start moving!"<<std::endl;
+  std::cout<<"Car Program is ONLINE"<<std::endl;
 
   motor->Start();
   rf->Start();
