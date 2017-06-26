@@ -18,6 +18,14 @@ public:
     RIGHT = 3,
     STOP = 4
   };
+  
+  enum STATE {
+    STOPPED = 0x01,
+    MOVING_IN = 0x02,
+    MOVING_OUT = 0x03,
+    WAITING = 0x04;
+  };
+
 
 private:
   /* ============== STATE PARAMETERS ============== */
@@ -29,12 +37,7 @@ private:
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
 
-  enum STATE {
-    STOPPED = 0x01,
-    MOVING_IN = 0x02,
-    MOVING_OUT = 0x03
-  };
-
+  
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
@@ -86,7 +89,7 @@ public:
       cars_states[i].second = 0x01;
     }
     cars_states[8].first = 0x01;
-    cars_states[8].second = 0x03;
+    cars_states[8].second = WAITING;
   }
 
   ~CarState() {std::cout << "CLOSING STATE!" << std::endl;}
@@ -113,12 +116,12 @@ public:
     std::cout<<"Shut down: " << std::dec << this->shutdown << std::endl;
   }
 
-  bool start_car(){
-    return route;
-  }
-
   bool is_shutting_down() {
     return this->shutdown;
+  }
+
+  STATE get_car_state() {
+    return car_state[8].second;
   }
 
   void shut_down() {
@@ -155,6 +158,9 @@ public:
   void decode(){
     int mask = 15;
     int next_point;
+    while (!car_route_decoded.empty()) {
+        car_route_decoded.pop();
+    }
     while( !car_route.empty() ){
       next_point = ( (int)car_route.front()) & mask;
       car_route.pop();
@@ -193,11 +199,11 @@ public:
       if (strcmp(mesaj + 1, (char*)signature) == 0) {
         this->direction = STOP;
         this->speed = 0;
-        cars_states[8].second = STOPPED;
+        cars_states[8].second = WAITING;
       }
     }
 
-    if (mesaj[0] == 0x03 && !route) {
+    if (mesaj[0] == 0x03 && get_car_state() == WAITING) {
       int i,j=1,len=0;
       int idMasina=0;
       do {
@@ -222,7 +228,7 @@ public:
       car_route.pop();
       this->speed = 40;
       this->direction = FORWARD;
-      route=true;
+      cars_states[8].second = MOVING_OUT;
       decode();
     }
   }

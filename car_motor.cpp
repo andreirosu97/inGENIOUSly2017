@@ -6,14 +6,7 @@
 #include <algorithm>
 
 void CarMotor::Start() {
-  if(wiringPiSetup() < 0) {
-    std::cout << "Nu a mers wiringPiSetupul"<<std::endl;
-    state->shut_down();
-  }
-  pinMode(BACK_LIGHT, OUTPUT);
-  pinMode(RIGHT_YELLOW_LIGHT, OUTPUT);
-  pinMode(LEFT_YELLOW_LIGHT, OUTPUT);
-
+  
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
   pinMode(PIN_1_2, OUTPUT);
@@ -44,6 +37,18 @@ void CarMotor::Start() {
 
 CarMotor::CarMotor(CarState* state) {
   this->state = state;
+  
+  if(wiringPiSetup() < 0) { // MUTAT DIN CAR STATE 
+    std::cout << "Nu a mers wiringPiSetupul"<<std::endl;
+    state->shut_down();
+  }
+  pinMode(BACK_LIGHT, OUTPUT);
+  pinMode(RIGHT_YELLOW_LIGHT, OUTPUT);
+  pinMode(LEFT_YELLOW_LIGHT, OUTPUT);
+  digitalWrite(BACK_LIGHT, LOW);
+  digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
+  digitalWrite(LEFT_YELLOW_LIGHT, LOW);
+
 }
 
 void CarMotor::SetSpeedLeft(int speed) {
@@ -156,7 +161,11 @@ void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
     clock_t diff = (current_time - last_blink) / CLOCKS_PER_SEC;
     if(directie == LEFT){
       digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
+<<<<<<< HEAD
       if((float)diff > 0.3){
+=======
+      if(diff > 0.2){
+>>>>>>> 19cd272ad06e9739d5406c05d47f07913146c9b0
           digitalWrite(LEFT_YELLOW_LIGHT, !blink_led_on);
           last_blink = current_time;
           blink_led_on = !blink_led_on;
@@ -164,7 +173,11 @@ void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
       }
     else{
       digitalWrite(LEFT_YELLOW_LIGHT, LOW);
+<<<<<<< HEAD
       if((float)diff > 0.3){
+=======
+      if(diff > 0.2){
+>>>>>>> 19cd272ad06e9739d5406c05d47f07913146c9b0
           digitalWrite(RIGHT_YELLOW_LIGHT, !blink_led_on);
           last_blink = current_time;
           blink_led_on = !blink_led_on;

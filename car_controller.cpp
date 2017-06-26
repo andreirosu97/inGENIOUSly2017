@@ -12,7 +12,7 @@ namespace {
 
 void CarController::Start() {
   std::string ip = "0.0.0.0";
-  int port = 5001;
+  int port = 5000;
 
   std::cout << "Initializarea pornita" << std::endl;
 
@@ -29,9 +29,7 @@ void CarController::Start() {
   connection->Connect();
   connection->Start();
 
-  while(!state->start_car() && !signal_shutdown);//Sleep till the map was recieved
-
-  std::cout<<"Car Start moving!"<<std::endl;
+  std::cout<<"Car Program is ONLINE"<<std::endl;
 
   motor->Start();
   rf->Start();

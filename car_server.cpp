@@ -30,12 +30,14 @@ void CarServer::SyncronizeState(){
   struct sockaddr_in s;
   clock_t last_time = clock();
   while(thread_on){
-    clock_t current_time = clock();
-    if ((float)(current_time - last_time) / CLOCKS_PER_SEC > 0.01) {
-        unsigned char telegrama[6];
-        state->get_my_state(telegrama);
-        SendMessage((char*)telegrama);
-        last_time = current_time;
+    if (state->get_car_state() != CarState::WAITING) {
+        clock_t current_time = clock();
+        if ((float)(current_time - last_time) / CLOCKS_PER_SEC > 0.01) {
+            unsigned char telegrama[6];
+            state->get_my_state(telegrama);
+            SendMessage((char*)telegrama);
+            last_time = current_time;
+        }
     }
   }
 }
