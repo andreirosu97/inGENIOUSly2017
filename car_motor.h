@@ -34,6 +34,8 @@
 const int PIN_FOLLOW_STANGA = 0;
 const int PIN_FOLLOW_MIJLOC = 1;
 const int PIN_FOLLOW_DREAPTA = 2;
+const int PIN_FOLLOW_DREAPTA_FAR = 31;
+const int PIN_FOLLOW_STANGA_FAR = 30;
 
 class CarMotor {
 public:
@@ -56,7 +58,8 @@ private:
     clock_t turn_time;
     clock_t last_blink;
     bool blink_led_on=false;
-
+    bool start_checking=false;
+    
     CarState* state;
     std::unique_ptr<std::thread> motor_thread;
     void SyncronizeState();

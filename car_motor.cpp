@@ -136,15 +136,18 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valStanga = digitalRead(PIN_FOLLOW_STANGA);
   int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
   int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
+  int valDreaptaFar = digitalRead(PIN_FOLLOW_DREAPTA_FAR);
+  int valStangaFar = digitalRead(PIN_FOLLOW_STANGA_FAR);
+
   std::cout<<valStanga<<" "<<valMijloc<<" "<<valDreapta<<std::endl;
   const int NEGRU = 1;
   const int ALB = 0;
 
   if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU)
     return MIJLOC;
-  if ( valDreapta == ALB && valStanga == NEGRU)
+  if ( valDreapta == ALB && (valStanga == NEGRU || valStangaFar == NEGRU) )
     return DREAPTA;
-  if ( valStanga == ALB && valDreapta == NEGRU)
+  if ( valStanga == ALB && (valDreapta == NEGRU || valDreaptaFar == NEGRU) )
     return STANGA;
   return UNKNOWN;
 }
@@ -208,15 +211,21 @@ void CarMotor::SyncronizeState() {
             if (is_turning) {
                 clock_t current_time = clock();
                 BlinkIfNecessary(current_time, directie);
-                if ((float)(current_time - turn_time) / CLOCKS_PER_SEC > 1) {
+                if (start_checking) {
                     //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
                     if (correction_mode != UNKNOWN) {
                         state->update_motor_direction(CarState::FORWARD);
                         is_turning = false;
+                        start_checking = false;
                         ResetBlinks();
                     }
                 }
+              } else {
+                TipCorectie correction_mode = GetCorrectionMode();
+                if(correction_mode == UNKNOWN)
+                  start_checking = true;
+              }
             } else {
                 turn_time = clock();
                 last_blink = turn_time;
