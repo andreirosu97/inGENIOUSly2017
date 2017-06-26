@@ -141,17 +141,16 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valStanga = digitalRead(PIN_FOLLOW_STANGA);
   int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
   int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
-
+  //std::cout<<valStanga<<" "<<valMijloc<<" "<<valDreapta<<std::endl;
   const int NEGRU = 1;
   const int ALB = 0;
 
   if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU)
     return MIJLOC;
-  if (valDreapta == ALB && valStanga == NEGRU)
+  if ( valDreapta == ALB && valStanga == NEGRU)
     return DREAPTA;
-  if (valStanga == ALB && valDreapta == NEGRU)
+  if ( valStanga == ALB && valDreapta == NEGRU)
     return STANGA;
-
   return UNKNOWN;
 }
 
@@ -194,11 +193,11 @@ void CarMotor::SyncronizeState() {
             int vitezaStanga = speed;
             int vitezaDreapta = speed;
             if (correction_mode == STANGA) {
-                vitezaStanga = 1;
-                vitezaDreapta = std::min(100, speed * 2);
+                vitezaStanga = 100;
+                vitezaDreapta = 1;
             } else if (correction_mode == DREAPTA) {
-                vitezaStanga = std::min(100, speed * 2);
-                vitezaDreapta = 1; 
+                vitezaStanga = 1;
+                vitezaDreapta = 100;
             }
             SetSpeedLeft(vitezaStanga);
             SetSpeedRight(vitezaDreapta);
@@ -214,13 +213,13 @@ void CarMotor::SyncronizeState() {
             if (is_turning) {
                 clock_t current_time = clock();
                 BlinkIfNecessary(current_time, directie);
-                if ((current_time - turn_time) / CLOCKS_PER_SEC > 1.2) {
+                if ((current_time - turn_time) / CLOCKS_PER_SEC > 1) {
                     //std::cout<<"Started checking"<<std::endl;
                     TipCorectie correction_mode = GetCorrectionMode();
                     if (correction_mode != UNKNOWN) {
                         state->update_motor_direction(CarState::FORWARD);
                         is_turning = false;
-                        ResetBlinks();    
+                        ResetBlinks();
                     }
                 }
             } else {

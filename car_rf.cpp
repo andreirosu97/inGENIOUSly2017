@@ -28,7 +28,7 @@ void CarRF::SyncronizeState() {
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid);
           unsigned int uid = (buffer_uid[0]<<24)|(buffer_uid[1]<<16)|(buffer_uid[2]<<8)|buffer_uid[3];
-          std::cout << std::hex << "UIDul este " << uid << std::endl;
+          //std::cout << std::hex << "UIDul este " << uid << std::endl;
           state->update_rf_tag(uid);
       }
     }
