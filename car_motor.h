@@ -71,6 +71,8 @@ private:
     void BlinkIfNecessary(clock_t current_time, Direction direction);
     void ResetBlinks();
 
+    int Catch();
+
     TipCorectie GetCorrectionMode();
 
     int thread_on = 1;

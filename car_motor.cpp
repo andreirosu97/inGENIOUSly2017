@@ -6,7 +6,7 @@
 #include <algorithm>
 
 void CarMotor::Start() {
-  
+
   pinMode(PWM_1, OUTPUT);
   pinMode(PIN_1_1, OUTPUT);
   pinMode(PIN_1_2, OUTPUT);
@@ -37,8 +37,8 @@ void CarMotor::Start() {
 
 CarMotor::CarMotor(CarState* state) {
   this->state = state;
-  
-  if(wiringPiSetup() < 0) { // MUTAT DIN CAR STATE 
+
+  if(wiringPiSetup() < 0) { // MUTAT DIN CAR STATE
     std::cout << "Nu a mers wiringPiSetupul"<<std::endl;
     state->shut_down();
   }
@@ -144,7 +144,6 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   int valDreaptaFar = digitalRead(PIN_FOLLOW_DREAPTA_FAR);
   int valStangaFar = digitalRead(PIN_FOLLOW_STANGA_FAR);
 
-  std::cout<<valStangaFar<< " " << valStanga<<" "<<valMijloc<<" "<<valDreapta<< " " << valDreaptaFarstd::endl;
   const int NEGRU = 1;
   const int ALB = 0;
 
@@ -155,6 +154,19 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
   if ( valStanga == ALB && (valDreapta == NEGRU || valDreaptaFar == NEGRU) )
     return STANGA;
   return UNKNOWN;
+}
+
+int CarMotor::Catch() {
+  int valStanga = digitalRead(PIN_FOLLOW_STANGA);
+  int valMijloc = digitalRead(PIN_FOLLOW_MIJLOC);
+  int valDreapta = digitalRead(PIN_FOLLOW_DREAPTA);
+
+  const int NEGRU = 1;
+  const int ALB = 0;
+
+  if (valDreapta == NEGRU || valStanga == NEGRU || valMijloc == NEGRU)
+      return 1;
+  return 0;
 }
 
 void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
@@ -216,26 +228,30 @@ void CarMotor::SyncronizeState() {
             if (is_turning) {
                 clock_t current_time = clock();
                 BlinkIfNecessary(current_time, directie);
-                if (start_checking) {
-                    TipCorectie correction_mode = GetCorrectionMode();
-                    if (correction_mode != UNKNOWN) {
-                        state->update_motor_direction(CarState::FORWARD);
-                        is_turning = false;
-                        start_checking = false;
-                        ResetBlinks();
+                float diff = (float)(current_time - turn_time) / CLOCKS_PER_SEC;
+                if ((float)diff > 1) { 
+                    if (start_checking) {
+                        if (Catch()) {
+                            state->update_motor_direction(CarState::FORWARD);
+                            is_turning = false;
+                            start_checking = false;
+                            ResetBlinks();
+                        }
+                    } else {
+                        TipCorectie correction_mode = GetCorrectionMode();
+                        std::cout << "INAINTE" << std::endl;
+                        if(correction_mode == UNKNOWN) {
+                          start_checking = true;
+                          std::cout << "E UNKNOWN";
+                        }
                     }
-                } else {
-                TipCorectie correction_mode = GetCorrectionMode();
-                if(correction_mode == UNKNOWN)
-                  start_checking = true;
-              }
+                }
             } else {
                 turn_time = clock();
                 last_blink = turn_time;
                 is_turning = true;
             }
         }
-        delay(100);
   }
 }
 

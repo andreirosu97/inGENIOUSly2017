@@ -18,7 +18,7 @@ public:
     RIGHT = 3,
     STOP = 4
   };
-  
+
   enum STATE {
     STOPPED = 0x01,
     MOVING_IN = 0x02,
@@ -37,7 +37,7 @@ private:
   int shutdown = 0;//car client sets it
   char car_type = 0xff;
 
-  
+
   clock_t stop_time;
   std::vector<std::pair<char, char>> cars_states;
   std::queue <char> car_route;
@@ -100,10 +100,10 @@ public:
     int mask_58=(15<<4); // mask for the A in 0xAB
     int mask_14= 15; // mask for the B in 0xAB
     for(i = 1; i <= 7; i++ )
-      if( mask_58 & my_position == mask_58 & cars_states[i].first){//Suntem intr-o intersectie cu alta masina
+      if( (mask_58 & my_position) == (mask_58 & cars_states[i].first)){//Suntem intr-o intersectie cu alta masina
         if( cars_states[i].second == 0x02 )// If the car is MOVING IN we wait more
           return false;
-        else if( mask_14 & cars_states[i].first < mask_14 & my_position || ( mask_14 & cars_states[i].first == 0x04 &&  mask_14 & my_position == 0x01))
+        else if(( (mask_14 & cars_states[i].first) < (mask_14 & my_position)) ||((mask_14 & cars_states[i].first) == 0x04 &&  (mask_14 & my_position) == 0x01))
           return false;
       }
     return true;
@@ -120,8 +120,8 @@ public:
     return this->shutdown;
   }
 
-  STATE get_car_state() {
-    return car_state[8].second;
+  char get_car_state() {
+    return cars_states[8].second;
   }
 
   void shut_down() {
@@ -166,10 +166,13 @@ public:
       car_route.pop();
       if(next_point % 2 == entry_point % 2){
         car_route_decoded.push(FORWARD);
-      }else if( next_point > entry_point || ( next_point== 0x01 && entry_point== 0x04) ){
+      } else if ( next_point== 0x01 && entry_point== 0x04) {
         car_route_decoded.push(LEFT);
-      }
-      else if( next_point < entry_point || ( next_point== 0x04 && entry_point== 0x01) ){
+      } else if (next_point== 0x04 && entry_point== 0x01) {
+        car_route_decoded.push(RIGHT);
+      } else if( next_point > entry_point){
+        car_route_decoded.push(LEFT);
+      } else if( next_point < entry_point){
         car_route_decoded.push(RIGHT);
       }
 
@@ -206,6 +209,7 @@ public:
     if (mesaj[0] == 0x03 && get_car_state() == WAITING) {
       int i,j=1,len=0;
       int idMasina=0;
+      std::cout << "CarMessage" << std::endl;
       do {
 
         if(!car_route.empty()) {

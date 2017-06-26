@@ -1,3 +1,2 @@
 rm *.o
 make
-./programel
