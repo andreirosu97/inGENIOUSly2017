@@ -103,8 +103,9 @@ public:
       if( (mask_58 & my_position) == (mask_58 & cars_states[i].first)){//Suntem intr-o intersectie cu alta masina
         if( cars_states[i].second == 0x02 )// If the car is MOVING IN we wait more
           return false;
-        else if(( (mask_14 & cars_states[i].first) < (mask_14 & my_position)) ||((mask_14 & cars_states[i].first) == 0x04 &&  (mask_14 & my_position) == 0x01))
-          return false;
+        else if( cars_states[i].second != 0x03 ) // daca masina nu e pe moving out
+          if(( (mask_14 & cars_states[i].first) == (mask_14 & my_position)) - 1 ||((mask_14 & cars_states[i].first) == 0x04 &&  (mask_14 & my_position) == 0x01))
+            return false;
       }
     return true;
   }
