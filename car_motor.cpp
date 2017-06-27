@@ -197,6 +197,7 @@ void CarMotor::ResetBlinks() {
 
 void CarMotor::SyncronizeState() {
     while(thread_on) {
+      if (state->get_car_state() != CarState::WAITING) {
         std::pair<int, int> m_state = state->get_motor_state();
         Direction directie = (Direction)m_state.first;
         int speed = m_state.second;
@@ -229,7 +230,7 @@ void CarMotor::SyncronizeState() {
                 clock_t current_time = clock();
                 BlinkIfNecessary(current_time, directie);
                 float diff = (float)(current_time - turn_time) / CLOCKS_PER_SEC;
-                if ((float)diff > 1) { 
+                if ((float)diff > 1) {
                     if (start_checking) {
                         if (Catch()) {
                             state->update_motor_direction(CarState::FORWARD);
@@ -253,6 +254,7 @@ void CarMotor::SyncronizeState() {
             }
         }
   }
+}
 }
 
 CarMotor::~CarMotor() {

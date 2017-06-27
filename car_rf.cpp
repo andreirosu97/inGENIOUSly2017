@@ -24,6 +24,7 @@ void CarRF::Start() {
 
 void CarRF::SyncronizeState() {
   while(thread_on){
+    if (state->get_car_state() != CarState::WAITING) {
       unsigned char status = PcdRequest(PICC_REQIDL, buffer_tag);
       if(status == TAG_OK){
           PcdAnticoll(0, buffer_uid);
@@ -32,4 +33,5 @@ void CarRF::SyncronizeState() {
           state->update_rf_tag(uid);
       }
     }
+  }
 }
