@@ -146,7 +146,7 @@ CarMotor::TipCorectie CarMotor::GetCorrectionMode() {
 
   const int NEGRU = 1;
   const int ALB = 0;
-
+  std::cout<< valStangaFar<< valStanga<<valMijloc<<valDreapta<<valDreaptaFar<<std::endl;
   if (valDreapta == ALB && valStanga == ALB && valMijloc == NEGRU)
     return MIJLOC;
   if ( valDreapta == ALB && (valStanga == NEGRU || valStangaFar == NEGRU) )
@@ -173,7 +173,7 @@ void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
     clock_t diff = (current_time - last_blink) / CLOCKS_PER_SEC;
     if(directie == LEFT){
       digitalWrite(RIGHT_YELLOW_LIGHT, LOW);
-      if((float)diff > 0.3){
+      if((float)diff > 0.1){
           digitalWrite(LEFT_YELLOW_LIGHT, !blink_led_on);
           last_blink = current_time;
           blink_led_on = !blink_led_on;
@@ -181,7 +181,7 @@ void CarMotor::BlinkIfNecessary(clock_t current_time, Direction directie) {
       }
     else{
       digitalWrite(LEFT_YELLOW_LIGHT, LOW);
-      if((float)diff > 0.3){
+      if((float)diff > 0.1){
           digitalWrite(RIGHT_YELLOW_LIGHT, !blink_led_on);
           last_blink = current_time;
           blink_led_on = !blink_led_on;
